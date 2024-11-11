@@ -1,3 +1,64 @@
+const LS_SETTINGS_KEY = "hyper-n-back";
+
+function saveSettings() {
+  const stringifiedSettings = JSON.stringify({
+    wallsEnabled,
+    cameraEnabled,
+    faceEnabled,
+    positionEnabled,
+    wordEnabled,
+    shapeEnabled,
+    cornerEnabled,
+    soundEnabled,
+    colorEnabled,
+    //
+    sceneDimmer,
+    zoom,
+    perspective,
+    targetNumOfStimuli,
+    baseDelay,
+    minDelay,
+    maxDelay,
+    prevLevelThreshold,
+    nextLevelThreshold
+  });
+  localStorage.setItem(LS_SETTINGS_KEY, stringifiedSettings);
+}
+
+function loadSettings() {
+  const settings = JSON.parse(localStorage.getItem(LS_SETTINGS_KEY));
+  if (settings) {
+    wallsEnabled = settings.wallsEnabled;
+    wallsEnableTrig.checked = wallsEnabled;
+    cameraEnabled = settings.cameraEnabled;
+    cameraEnableTrig.checked = cameraEnabled;
+    faceEnabled = settings.faceEnabled;
+    faceEnableTrig.checked = faceEnabled;
+    positionEnabled = settings.positionEnabled;
+    positionEnableTrig.checked = positionEnabled;
+    wordEnabled = settings.wordEnabled;
+    wordEnableTrig.checked = wordEnabled;
+    shapeEnabled = settings.shapeEnabled;
+    shapeEnableTrig.checked = shapeEnabled;
+    cornerEnabled = settings.cornerEnabled;
+    cornerEnableTrig.checked = cornerEnabled;
+    soundEnabled = settings.soundEnabled;
+    soundEnableTrig.checked = soundEnabled;
+    colorEnabled = settings.colorEnabled;
+    colorEnableTrig.checked = colorEnabled;
+    //
+    sceneDimmer = settings.sceneDimmer;
+    zoom = settings.zoom;
+    perspective = settings.perspective;
+    targetNumOfStimuli = settings.targetNumOfStimuli;
+    baseDelay = settings.baseDelay;
+    minDelay = settings.minDelay;
+    maxDelay = settings.maxDelay;
+    prevLevelThreshold = settings.prevLevelThreshold;
+    nextLevelThreshold = settings.nextLevelThreshold;
+  }
+}
+
 let sceneWrapper = document.querySelector(".scene-wrapper");
 let scene = document.querySelector(".scene");
 
@@ -132,7 +193,8 @@ wallsEnableTrig.addEventListener("input", () =>
     !wallsEnabled ?
       checkWallsBtn.style.display = "none" :
       checkWallsBtn.style.display = "inline-block",
-    checkWallsBtn.style.animationDelay = "0s"
+    checkWallsBtn.style.animationDelay = "0s",
+    saveSettings()
   )
 );
 
@@ -144,7 +206,8 @@ cameraEnableTrig.addEventListener("input", () =>
     !cameraEnabled ?
       checkCameraBtn.style.display = "none" :
       checkCameraBtn.style.display = "inline-block",
-    checkCameraBtn.style.animationDelay = "0s"
+    checkCameraBtn.style.animationDelay = "0s",
+    saveSettings()
   )
 );
 
@@ -156,7 +219,8 @@ faceEnableTrig.addEventListener("input", () =>
     !faceEnabled ?
       checkFaceBtn.style.display = "none" :
       checkFaceBtn.style.display = "inline-block",
-    checkFaceBtn.style.animationDelay = "0s"
+    checkFaceBtn.style.animationDelay = "0s",
+    saveSettings()
   )
 );
 
@@ -168,7 +232,8 @@ positionEnableTrig.addEventListener("input", () =>
     !positionEnabled ?
       checkPositionBtn.style.display = "none" :
       checkPositionBtn.style.display = "inline-block",
-    checkPositionBtn.style.animationDelay = "0s"
+    checkPositionBtn.style.animationDelay = "0s",
+    saveSettings()
   )
 );
 
@@ -180,7 +245,8 @@ wordEnableTrig.addEventListener("input", () =>
     !wordEnabled ?
       checkWordBtn.style.display = "none" :
       checkWordBtn.style.display = "inline-block",
-    checkWordBtn.style.animationDelay = "0s"
+    checkWordBtn.style.animationDelay = "0s",
+    saveSettings()
   )
 );
 
@@ -201,6 +267,7 @@ function shapeEnableTrigHandler() {
   }
 
   checkShapeBtn.style.animationDelay = "0s";
+  saveSettings();
 }
 
 cornerEnableTrig.addEventListener("input", () => {
@@ -227,7 +294,8 @@ cornerEnableTrig.addEventListener("input", () => {
   }
   
   innerFaceEls.forEach(face => face.style.animationDelay = "0s"),
-  checkCornerBtn.style.animationDelay = "0s"
+  checkCornerBtn.style.animationDelay = "0s";
+  saveSettings();
 });
 shapeEnableTrig.addEventListener("input", shapeEnableTrigHandler);
 
@@ -239,7 +307,8 @@ soundEnableTrig.addEventListener("input", () =>
     !soundEnabled ?
       checkSoundBtn.style.display = "none" :
       checkSoundBtn.style.display = "inline-block",
-    checkSoundBtn.style.animationDelay = "0s"
+    checkSoundBtn.style.animationDelay = "0s",
+    saveSettings()
   )
 );
 
@@ -251,7 +320,8 @@ colorEnableTrig.addEventListener("input", () =>
     !colorEnabled ?
       checkColorBtn.style.display = "none" :
       checkColorBtn.style.display = "inline-block",
-    checkColorBtn.style.animationDelay = "0s"
+    checkColorBtn.style.animationDelay = "0s",
+    saveSettings()
   )
 );
 
@@ -407,6 +477,8 @@ nextLevelThresholdInput.value = nextLevelThreshold * 100;
 nextLevelThresholdInput.addEventListener("input", () =>
   nextLevelThreshold = +nextLevelThresholdInput.value / 100
 );
+
+loadSettings();
 
 // Game states
 let matchingStimuli = 0;
