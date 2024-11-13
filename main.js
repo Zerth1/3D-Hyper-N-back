@@ -31,21 +31,28 @@ function loadSettings() {
     wallsEnabled = settings.wallsEnabled;
     wallsEnableTrig.checked = wallsEnabled;
     wallsEnableTrigHandler(false);
-
     cameraEnabled = settings.cameraEnabled;
     cameraEnableTrig.checked = cameraEnabled;
+    cameraEnableTrigHandler(false);
     faceEnabled = settings.faceEnabled;
     faceEnableTrig.checked = faceEnabled;
+    faceEnableTrigHandler(false);
     positionEnabled = settings.positionEnabled;
     positionEnableTrig.checked = positionEnabled;
+    positionEnableTrigHandler(false);
+
     wordEnabled = settings.wordEnabled;
     wordEnableTrig.checked = wordEnabled;
+
     shapeEnabled = settings.shapeEnabled;
     shapeEnableTrig.checked = shapeEnabled;
+
     cornerEnabled = settings.cornerEnabled;
     cornerEnableTrig.checked = cornerEnabled;
+
     soundEnabled = settings.soundEnabled;
     soundEnableTrig.checked = soundEnabled;
+
     colorEnabled = settings.colorEnabled;
     colorEnableTrig.checked = colorEnabled;
     //
@@ -199,7 +206,7 @@ const wallsEnableTrigHandler = (toggle = true) => {
   } else {
     checkWallsBtn.style.display = "inline-block";
   }
-  
+
   checkWallsBtn.style.animationDelay = "0s";
   saveSettings();
 };
@@ -207,42 +214,57 @@ wallsEnableTrig.addEventListener("input", wallsEnableTrigHandler);
 
 let cameraEnabled = true;
 cameraEnableTrig.checked = cameraEnabled;
-cameraEnableTrig.addEventListener("input", () =>
-  (
-    cameraEnabled = !cameraEnabled,
-    !cameraEnabled ?
-      checkCameraBtn.style.display = "none" :
-      checkCameraBtn.style.display = "inline-block",
-    checkCameraBtn.style.animationDelay = "0s",
-    saveSettings()
-  )
-);
+const cameraEnableTrigHandler = (toggle = true) => {
+  if (toggle) {
+    cameraEnabled = !cameraEnabled;
+  }
+
+  if (!cameraEnabled) {
+    checkCameraBtn.style.display = "none";
+  } else {
+    checkCameraBtn.style.display = "inline-block";
+  }
+
+  checkCameraBtn.style.animationDelay = "0s";
+  saveSettings();
+};
+cameraEnableTrig.addEventListener("input", cameraEnableTrigHandler);
 
 let faceEnabled = true;
 faceEnableTrig.checked = faceEnabled;
-faceEnableTrig.addEventListener("input", () =>
-  (
-    faceEnabled = !faceEnabled,
-    !faceEnabled ?
-      checkFaceBtn.style.display = "none" :
-      checkFaceBtn.style.display = "inline-block",
-    checkFaceBtn.style.animationDelay = "0s",
-    saveSettings()
-  )
-);
+const faceEnableTrigHandler = (toggle = true) => {
+  if (toggle) {
+    faceEnabled = !faceEnabled;
+  }
+
+  if (!faceEnabled) {
+    checkFaceBtn.style.display = "none";
+  } else {
+    checkFaceBtn.style.display = "inline-block";
+  }
+
+  checkFaceBtn.style.animationDelay = "0s";
+  saveSettings();
+};
+faceEnableTrig.addEventListener("input", faceEnableTrigHandler);
 
 let positionEnabled = true;
 positionEnableTrig.checked = faceEnabled;
-positionEnableTrig.addEventListener("input", () =>
-  (
-    positionEnabled = !positionEnabled,
-    !positionEnabled ?
-      checkPositionBtn.style.display = "none" :
-      checkPositionBtn.style.display = "inline-block",
-    checkPositionBtn.style.animationDelay = "0s",
-    saveSettings()
-  )
-);
+const positionEnableTrigHandler = (toggle = true) => {
+  if (toggle) {
+    positionEnabled = !positionEnabled;
+  }
+
+  if (!positionEnabled) {
+    checkPositionBtn.style.display = "none";
+  } else {
+    checkPositionBtn.style.display = "inline-block";
+  }
+
+  checkPositionBtn.style.animationDelay = "0s";
+  saveSettings();
+};
+positionEnableTrig.addEventListener("input", positionEnableTrigHandler);
 
 let wordEnabled = true;
 wordEnableTrig.checked = wordEnabled;
