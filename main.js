@@ -228,7 +228,7 @@ perspectiveInput.addEventListener("input", perspectiveInputHandler);
 targetStimuliInputHandler(null, targetNumOfStimuli);
 targetStimuliInput.addEventListener("input", targetStimuliInputHandler);
 
-
+/** Start TODO */
 baseDelayInput.value = baseDelay;
 
 minDelayInput.value = minDelay;
@@ -270,6 +270,7 @@ nextLevelThresholdInput.value = nextLevelThreshold * 100;
 nextLevelThresholdInput.addEventListener("input", () =>
   nextLevelThreshold = +nextLevelThresholdInput.value / 100
 );
+/** End TODO */
 
 loadSettings();
 
