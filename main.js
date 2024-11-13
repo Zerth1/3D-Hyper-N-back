@@ -1,73 +1,6 @@
 const LS_SETTINGS_KEY = "hyper-n-back";
 
-function saveSettings() {
-  const stringifiedSettings = JSON.stringify({
-    wallsEnabled,
-    cameraEnabled,
-    faceEnabled,
-    positionEnabled,
-    wordEnabled,
-    shapeEnabled,
-    cornerEnabled,
-    soundEnabled,
-    colorEnabled,
-    //
-    sceneDimmer,
-    zoom,
-    perspective,
-    targetNumOfStimuli,
-    baseDelay,
-    minDelay,
-    maxDelay,
-    prevLevelThreshold,
-    nextLevelThreshold
-  });
-  localStorage.setItem(LS_SETTINGS_KEY, stringifiedSettings);
-}
-
-function loadSettings() {
-  const settings = JSON.parse(localStorage.getItem(LS_SETTINGS_KEY));
-  if (settings) {
-    wallsEnabled = settings.wallsEnabled;
-    wallsEnableTrig.checked = wallsEnabled;
-    wallsEnableTrigHandler(false);
-    cameraEnabled = settings.cameraEnabled;
-    cameraEnableTrig.checked = cameraEnabled;
-    cameraEnableTrigHandler(false);
-    faceEnabled = settings.faceEnabled;
-    faceEnableTrig.checked = faceEnabled;
-    faceEnableTrigHandler(false);
-    positionEnabled = settings.positionEnabled;
-    positionEnableTrig.checked = positionEnabled;
-    positionEnableTrigHandler(false);
-    wordEnabled = settings.wordEnabled;
-    wordEnableTrig.checked = wordEnabled;
-    wordEnableTrigHandler(false);
-    shapeEnabled = settings.shapeEnabled;
-    shapeEnableTrig.checked = shapeEnabled;
-    shapeEnableTrigHandler(false);
-    cornerEnabled = settings.cornerEnabled;
-    cornerEnableTrig.checked = cornerEnabled;
-    cornerEnableTrigHandler(false);
-    soundEnabled = settings.soundEnabled;
-    soundEnableTrig.checked = soundEnabled;
-    soundEnableTrigHandler(false);
-    colorEnabled = settings.colorEnabled;
-    colorEnableTrig.checked = colorEnabled;
-    colorEnableTrigHandler(false);
-    //
-    sceneDimmer = settings.sceneDimmer;
-    zoom = settings.zoom;
-    perspective = settings.perspective;
-    targetNumOfStimuli = settings.targetNumOfStimuli;
-    baseDelay = settings.baseDelay;
-    minDelay = settings.minDelay;
-    maxDelay = settings.maxDelay;
-    prevLevelThreshold = settings.prevLevelThreshold;
-    nextLevelThreshold = settings.nextLevelThreshold;
-  }
-}
-
+// DOM elements
 let sceneWrapper = document.querySelector(".scene-wrapper");
 let scene = document.querySelector(".scene");
 
@@ -120,18 +53,6 @@ let [
   colorEnableTrig
 ] = [...document.querySelectorAll(".toggle-trigger")];
 
-console.log(
-  wallsEnableTrig,
-  cameraEnableTrig,
-  faceEnableTrig,
-  positionEnableTrig,
-  wordEnableTrig,
-  shapeEnableTrig,
-  cornerEnableTrig,
-  soundEnableTrig,
-  colorEnableTrig
-);
-
 // Game settings
 let wallColorsList = [
   "#00b894",
@@ -144,7 +65,7 @@ let wallColorsList = [
 let points = [
   "-60&0", "-60&-45", "-60&-90",
   "-20&0", "-20&-45", "-20&-90"
-]; // I know this is ugly AF...
+];
 let numbers = "123456";
 let initialCubePosition = "-.5em, -3em, .5em";
 let moves = [
@@ -165,7 +86,7 @@ let wordsList = [
   "forest",
   "desert",
   "island",
-  "jungle", // Cut these out?
+  "jungle",
   "road",
   "city",
   "river",
@@ -195,9 +116,168 @@ let colorClasses = [
 
 // Editable settings
 let wallsEnabled = true;
-wallsEnableTrig.checked = wallsEnabled;
-const wallsEnableTrigHandler = (toggle = true) => {
-  if (toggle) {
+let cameraEnabled = true;
+let faceEnabled = true;
+let positionEnabled = true;
+let wordEnabled = true;
+let shapeEnabled = true;
+let cornerEnabled = true;
+let soundEnabled = true;
+let colorEnabled = true;
+let tileAHexColor = "#111";
+let tileBHexColor = "#888";
+let sceneDimmer = 0.5;
+let zoom = 0.7;
+let perspective = 15;
+let targetNumOfStimuli = 5;
+let gameStartDelay = 3000;
+let baseDelay = 5000;
+let minDelay = 2000;
+let maxDelay = 10000;
+let prevLevelThreshold = 0.5;
+let nextLevelThreshold = 0.9;
+
+// Game states
+let matchingStimuli = 0;
+let stimuliCount = 0;
+let intervals = [];
+
+let isRunning = false;
+
+let enableWallsCheck = true;
+let enableCameraCheck = true;
+let enableFaceCheck = true;
+let enablePositionCheck = true;
+
+let enableWordCheck = true;
+let enableShapeCheck = true;
+let enableCornerCheck = true;
+let enableSoundCheck = true;
+let enableColorCheck = true;
+
+let currWalls;
+let currCamera;
+let currFace;
+let currPosition;
+
+let currWord;
+let currShape;
+let currCorner;
+let currSound;
+let currColor;
+
+let rightWalls = 0;
+let rightCamera = 0;
+let rightFace = 0;
+let rightPosition = 0;
+
+let rightWord = 0;
+let rightShape = 0;
+let rightCorner = 0;
+let rightSound = 0;
+let rightColor = 0;
+
+let wrongWalls = 0;
+let wrongCamera = 0;
+let wrongFace = 0;
+let wrongPosition = 0;
+
+let wrongWord = 0;
+let wrongShape = 0;
+let wrongCorner = 0;
+let wrongSound = 0;
+let wrongColor = 0;
+
+// Events
+wallsEnableTrigHandler(null, wallsEnabled);
+wallsEnableTrig.addEventListener("input", wallsEnableTrigHandler);
+
+cameraEnableTrigHandler(null, cameraEnabled);
+cameraEnableTrig.addEventListener("input", cameraEnableTrigHandler);
+
+faceEnableTrigHandler(null, faceEnabled);
+faceEnableTrig.addEventListener("input", faceEnableTrigHandler);
+
+positionEnableTrigHandler(null, positionEnabled);
+positionEnableTrig.addEventListener("input", positionEnableTrigHandler);
+
+wordEnableTrigHandler(null, wordEnabled);
+wordEnableTrig.addEventListener("input", wordEnableTrigHandler);
+
+shapeEnableTrigHandler(null, shapeEnabled);
+shapeEnableTrig.addEventListener("input", shapeEnableTrigHandler);
+
+cornerEnableTrigHandler(null, cornerEnable);
+cornerEnableTrig.addEventListener("input", cornerEnableTrigHandler);
+
+soundEnableTrigHandler(null, faceEnabled);
+soundEnableTrig.addEventListener("input", soundEnableTrigHandler);
+
+colorEnableTrigHandler(null, colorEnabled);
+colorEnableTrig.addEventListener("input", colorEnableTrigHandler);
+
+sceneDimmerInputHandler(null, sceneDimmer);
+sceneDimmerInput.addEventListener("input", sceneDimmerInputHandler);
+
+zoomInputHandler(null, zoom);
+zoomInput.addEventListener("input", zoomInputHandler);
+
+perspectiveInputHandler(null, perspective);
+perspectiveInput.addEventListener("input", perspectiveInputHandler);
+
+targetStimuliInputHandler(null, targetNumOfStimuli);
+targetStimuliInput.addEventListener("input", targetStimuliInputHandler);
+
+
+baseDelayInput.value = baseDelay;
+
+minDelayInput.value = minDelay;
+
+maxDelayInput.value = maxDelay;
+baseDelayInput.addEventListener("input", () => {
+  baseDelay = Math.min(Math.max(+baseDelayInput.value, minDelay), maxDelay);
+  if (+baseDelayInput.value < minDelay || +baseDelayInput.value > maxDelay) {
+    baseDelayInput.style.borderColor = "#f00";
+  } else {
+    baseDelayInput.style.borderColor = "#fff";
+  }
+});
+minDelayInput.addEventListener("input", () => {
+  minDelay = Math.min(+minDelayInput.value, baseDelay);
+  if (+minDelayInput.value > baseDelay) {
+    minDelayInput.style.borderColor = "#f00";
+  } else {
+    minDelayInput.style.borderColor = "#fff";
+  }
+});
+maxDelayInput.addEventListener("input", () => {
+  maxDelay = Math.max(+maxDelayInput.value, baseDelay);
+  if (+maxDelayInput.value < baseDelay) {
+    maxDelayInput.style.borderColor = "#f00";
+  } else {
+    maxDelayInput.style.borderColor = "#fff";
+  }
+});
+
+
+previousLevelThresholdInput.value = prevLevelThreshold * 100;
+previousLevelThresholdInput.addEventListener("input", () =>
+  prevLevelThreshold = +previousLevelThresholdInput.value / 100
+);
+
+
+nextLevelThresholdInput.value = nextLevelThreshold * 100;
+nextLevelThresholdInput.addEventListener("input", () =>
+  nextLevelThreshold = +nextLevelThresholdInput.value / 100
+);
+
+loadSettings();
+
+// Functions
+function wallsEnableTrigHandler(evt, defVal) {
+  if (defVal != null) {
+    wallsEnableTrig.checked = defVal;
+  } else {
     wallsEnabled = !wallsEnabled;
   }
 
@@ -209,13 +289,12 @@ const wallsEnableTrigHandler = (toggle = true) => {
 
   checkWallsBtn.style.animationDelay = "0s";
   saveSettings();
-};
-wallsEnableTrig.addEventListener("input", wallsEnableTrigHandler);
+}
 
-let cameraEnabled = true;
-cameraEnableTrig.checked = cameraEnabled;
-const cameraEnableTrigHandler = (toggle = true) => {
-  if (toggle) {
+function cameraEnableTrigHandler(evt, defVal) {
+  if (defVal != null) {
+    cameraEnableTrig.checked = defVal;
+  } else {
     cameraEnabled = !cameraEnabled;
   }
 
@@ -227,13 +306,12 @@ const cameraEnableTrigHandler = (toggle = true) => {
 
   checkCameraBtn.style.animationDelay = "0s";
   saveSettings();
-};
-cameraEnableTrig.addEventListener("input", cameraEnableTrigHandler);
+}
 
-let faceEnabled = true;
-faceEnableTrig.checked = faceEnabled;
-const faceEnableTrigHandler = (toggle = true) => {
-  if (toggle) {
+function faceEnableTrigHandler(evt, defVal) {
+  if (defVal != null) {
+    faceEnableTrig.checked = defVal;
+  } else {
     faceEnabled = !faceEnabled;
   }
 
@@ -245,13 +323,12 @@ const faceEnableTrigHandler = (toggle = true) => {
 
   checkFaceBtn.style.animationDelay = "0s";
   saveSettings();
-};
-faceEnableTrig.addEventListener("input", faceEnableTrigHandler);
+}
 
-let positionEnabled = true;
-positionEnableTrig.checked = faceEnabled;
-const positionEnableTrigHandler = (toggle = true) => {
-  if (toggle) {
+function positionEnableTrigHandler(evt, defVal) {
+  if (defVal != null) {
+    positionEnableTrig.checked = defVal;
+  } else {
     positionEnabled = !positionEnabled;
   }
 
@@ -263,13 +340,12 @@ const positionEnableTrigHandler = (toggle = true) => {
 
   checkPositionBtn.style.animationDelay = "0s";
   saveSettings();
-};
-positionEnableTrig.addEventListener("input", positionEnableTrigHandler);
+}
 
-let wordEnabled = true;
-wordEnableTrig.checked = wordEnabled;
-const wordEnableTrigHandler = () => {
-  if (toggle) {
+function wordEnableTrigHandler(evt, defVal) {
+  if (defVal) {
+    wordEnableTrig.checked = defVal;
+  } else {
     wordEnabled = !wordEnabled;
   }
 
@@ -281,19 +357,12 @@ const wordEnableTrigHandler = () => {
   
   checkWordBtn.style.animationDelay = "0s";
   saveSettings();
-  )
-};
-wordEnableTrig.addEventListener("input", wordEnableTrigHandler);
+}
 
-// Shape disappears with corner
-let shapeEnabled = true;
-let cornerEnabled = true;
-
-shapeEnableTrig.checked = shapeEnabled;
-cornerEnableTrig.checked = cornerEnabled;
-
-const shapeEnableTrigHandler = (toggle = true) => {
-  if (toggle) {
+function shapeEnableTrigHandler(evt, defVal) {
+  if (defVal != null) {
+    shapeEnableTrig.checked = defVal;
+  } else {
     shapeEnabled = !shapeEnabled;
   }
 
@@ -306,10 +375,11 @@ const shapeEnableTrigHandler = (toggle = true) => {
   checkShapeBtn.style.animationDelay = "0s";
   saveSettings();
 }
-shapeEnableTrig.addEventListener("input", shapeEnableTrigHandler);
 
-const cornerEnableTrigHandler = (toggle = true) => {
-  if (toggle) {
+function cornerEnableTrigHandler(evt, defVal) {
+  if (defVal != null) {
+    cornerEnableTrig.checked = defVal;
+  } else {
     cornerEnabled = !cornerEnabled;
   }
   
@@ -336,13 +406,12 @@ const cornerEnableTrigHandler = (toggle = true) => {
   innerFaceEls.forEach(face => face.style.animationDelay = "0s"),
   checkCornerBtn.style.animationDelay = "0s";
   saveSettings();
-};
-cornerEnableTrig.addEventListener("input", cornerEnableTrigHandler);
+}
 
-let soundEnabled = true;
-soundEnableTrig.checked = faceEnabled;
-const soundEnableTrigHandler = (toggle = true) => {
-  if (toggle) {
+function soundEnableTrigHandler(evt, defVal) {
+  if (defVal != null) {
+    soundEnableTrig.checked = defVal;
+  } else {
     soundEnabled = !soundEnabled;
   }
 
@@ -354,13 +423,12 @@ const soundEnableTrigHandler = (toggle = true) => {
 
   checkSoundBtn.style.animationDelay = "0s";
   saveSettings();
-};
-soundEnableTrig.addEventListener("input", soundEnableTrigHandler);
+}
 
-let colorEnabled = true;
-colorEnableTrig.checked = faceEnabled;
-const colorEnableTrigHandler = (toggle = true) => {
-  if (toggle) {
+function colorEnableTrigHandler(evt, defVal) {
+  if (defVal != null) {
+    colorEnableTrig.checked = defVal;
+  } else {
     colorEnabled = !colorEnabled;
   }
 
@@ -372,8 +440,52 @@ const colorEnableTrigHandler = (toggle = true) => {
 
   checkColorBtn.style.animationDelay = "0s"
   saveSettings();
-};
-colorEnableTrig.addEventListener("input", colorEnableTrigHandler);
+}
+
+function sceneDimmerInputHandler(evt, defVal) {
+  if (defVal) {
+    sceneDimmerInput.value = defVal;
+  } else {
+    sceneDimmer = +sceneDimmerInput.value;
+  }
+
+  floors.forEach(floor =>
+    setFloorBackground(
+      floor,
+      sceneDimmer,
+      tileAHexColor,
+      tileBHexColor
+    )
+  );
+
+  saveSettings();
+}
+
+function zoomInputHandler(evt, defVal) {
+  if (defVal) {
+    zoomInput.value = defVal;
+  } else {
+    zoom = +zoomInput.value;
+  }
+  sceneWrapper.style.transform = `scale(${zoom})`;
+}
+
+function perspectiveInputHandler(evt, defVal) {
+  if (defVal) {
+    perspectiveInput.value = defVal;
+  } else {
+    perspective = +perspectiveInput.value;
+  }
+  sceneWrapper.style.perspective = `${perspective}em`;
+}
+
+function targetStimuliInputHandler(evt, defVal) {
+  if (defVal) {
+    targetStimuliInput.value = defVal;
+  } else {
+    targetNumOfStimuli = +targetStimuliInput.value;  
+  }
+}
 
 function setFloorBackground(floor, dimPercent, tileAHexColor, tileBHexColor) {
   if (dimPercent > 1) {
@@ -440,147 +552,65 @@ repeating-conic-gradient(
   }
 }
 
-let tileAHexColor = "#111";
-let tileBHexColor = "#888";
-let sceneDimmer = 0.5;
-sceneDimmerInput.value = sceneDimmer;
-floors.forEach(floor =>
-    setFloorBackground(
-      floor,
-      sceneDimmer,
-      tileAHexColor,
-      tileBHexColor
-    )
-  );
-sceneDimmerInput.addEventListener("input", () => {
-  sceneDimmer = +sceneDimmerInput.value;
-  floors.forEach(floor =>
-    setFloorBackground(
-      floor,
-      sceneDimmer,
-      tileAHexColor,
-      tileBHexColor
-    )
-  );
-});
+function saveSettings() {
+  const stringifiedSettings = JSON.stringify({
+    wallsEnabled,
+    cameraEnabled,
+    faceEnabled,
+    positionEnabled,
+    wordEnabled,
+    shapeEnabled,
+    cornerEnabled,
+    soundEnabled,
+    colorEnabled,
+    //
+    sceneDimmer,
+    zoom,
+    perspective,
+    targetNumOfStimuli,
+    baseDelay,
+    minDelay,
+    maxDelay,
+    prevLevelThreshold,
+    nextLevelThreshold
+  });
+  localStorage.setItem(LS_SETTINGS_KEY, stringifiedSettings);
+}
 
-let zoom = 0.7;
-zoomInput.value = zoom;
-zoomInput.addEventListener("input", () => {
-  zoom = +zoomInput.value;
-  sceneWrapper.style.transform = `scale(${zoom})`;
-});
-
-let perspective = 15;
-perspectiveInput.value = perspective;
-perspectiveInput.addEventListener("input", () => {
-  perspective = +perspectiveInput.value;
-  sceneWrapper.style.perspective = `${perspective}em`;
-});
-
-let targetNumOfStimuli = 5;
-targetStimuliInput.value = targetNumOfStimuli;
-targetStimuliInput.addEventListener("input", () =>
-  targetNumOfStimuli = +targetStimuliInput.value
-);
-
-let gameStartDelay = 3000;
-let baseDelay = 5000;
-baseDelayInput.value = baseDelay;
-let minDelay = 2000;
-minDelayInput.value = minDelay;
-let maxDelay = 10000;
-maxDelayInput.value = maxDelay;
-baseDelayInput.addEventListener("input", () => {
-  baseDelay = Math.min(Math.max(+baseDelayInput.value, minDelay), maxDelay);
-  if (+baseDelayInput.value < minDelay || +baseDelayInput.value > maxDelay) {
-    baseDelayInput.style.borderColor = "#f00";
-  } else {
-    baseDelayInput.style.borderColor = "#fff";
+function loadSettings() {
+  const settings = JSON.parse(localStorage.getItem(LS_SETTINGS_KEY));
+  if (settings) {
+    wallsEnabled = settings.wallsEnabled;
+    wallsEnableTrigHandler(null, wallsEnabled);
+    cameraEnabled = settings.cameraEnabled;
+    cameraEnableTrigHandler(null, cameraEnabled);
+    faceEnabled = settings.faceEnabled;
+    faceEnableTrigHandler(null, faceEnabled);
+    positionEnabled = settings.positionEnabled;
+    positionEnableTrigHandler(null, positionEnabled);
+    wordEnabled = settings.wordEnabled;
+    wordEnableTrigHandler(null, wordEnabled);
+    shapeEnabled = settings.shapeEnabled;
+    shapeEnableTrigHandler(null, shapeEnabled);
+    cornerEnabled = settings.cornerEnabled;
+    cornerEnableTrigHandler(null, cornerEnabled);
+    soundEnabled = settings.soundEnabled;
+    soundEnableTrigHandler(null, soundEnabled);
+    colorEnabled = settings.colorEnabled;
+    colorEnableTrigHandler(null, colorEnabled);
+    //
+    sceneDimmer = settings.sceneDimmer;
+    sceneDimmerInputHandler(null, sceneDimmer);
+    zoom = settings.zoom;
+    perspective = settings.perspective;
+    targetNumOfStimuli = settings.targetNumOfStimuli;
+    baseDelay = settings.baseDelay;
+    minDelay = settings.minDelay;
+    maxDelay = settings.maxDelay;
+    prevLevelThreshold = settings.prevLevelThreshold;
+    nextLevelThreshold = settings.nextLevelThreshold;
   }
-});
-minDelayInput.addEventListener("input", () => {
-  minDelay = Math.min(+minDelayInput.value, baseDelay);
-  if (+minDelayInput.value > baseDelay) {
-    minDelayInput.style.borderColor = "#f00";
-  } else {
-    minDelayInput.style.borderColor = "#fff";
-  }
-});
-maxDelayInput.addEventListener("input", () => {
-  maxDelay = Math.max(+maxDelayInput.value, baseDelay);
-  if (+maxDelayInput.value < baseDelay) {
-    maxDelayInput.style.borderColor = "#f00";
-  } else {
-    maxDelayInput.style.borderColor = "#fff";
-  }
-});
-
-let prevLevelThreshold = 0.5;
-previousLevelThresholdInput.value = prevLevelThreshold * 100;
-previousLevelThresholdInput.addEventListener("input", () =>
-  prevLevelThreshold = +previousLevelThresholdInput.value / 100
-);
-
-let nextLevelThreshold = 0.9;
-nextLevelThresholdInput.value = nextLevelThreshold * 100;
-nextLevelThresholdInput.addEventListener("input", () =>
-  nextLevelThreshold = +nextLevelThresholdInput.value / 100
-);
-
-loadSettings();
-
-// Game states
-let matchingStimuli = 0;
-let stimuliCount = 0;
-let intervals = [];
-
-let isRunning = false;
-
-// I know I should use objects here, I will re-factor it at some point...
-let enableWallsCheck = true;
-let enableCameraCheck = true;
-let enableFaceCheck = true;
-let enablePositionCheck = true;
-
-let enableWordCheck = true;
-let enableShapeCheck = true;
-let enableCornerCheck = true;
-let enableSoundCheck = true;
-let enableColorCheck = true;
-
-let currWalls;
-let currCamera;
-let currFace;
-let currPosition;
-
-let currWord;
-let currShape;
-let currCorner;
-let currSound;
-let currColor;
-
-let rightWalls = 0;
-let rightCamera = 0;
-let rightFace = 0;
-let rightPosition = 0;
-
-let rightWord = 0;
-let rightShape = 0;
-let rightCorner = 0;
-let rightSound = 0;
-let rightColor = 0;
-
-let wrongWalls = 0;
-let wrongCamera = 0;
-let wrongFace = 0;
-let wrongPosition = 0;
-
-let wrongWord = 0;
-let wrongShape = 0;
-let wrongCorner = 0;
-let wrongSound = 0;
-let wrongColor = 0;
+}
 
 function random(iterable) {
   return iterable[
