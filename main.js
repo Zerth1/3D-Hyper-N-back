@@ -40,21 +40,21 @@ function loadSettings() {
     positionEnabled = settings.positionEnabled;
     positionEnableTrig.checked = positionEnabled;
     positionEnableTrigHandler(false);
-
     wordEnabled = settings.wordEnabled;
     wordEnableTrig.checked = wordEnabled;
-
+    wordEnableTrigHandler(false);
     shapeEnabled = settings.shapeEnabled;
     shapeEnableTrig.checked = shapeEnabled;
-
+    shapeEnableTrigHandler(false);
     cornerEnabled = settings.cornerEnabled;
     cornerEnableTrig.checked = cornerEnabled;
-
+    cornerEnableTrigHandler(false);
     soundEnabled = settings.soundEnabled;
     soundEnableTrig.checked = soundEnabled;
-
+    soundEnableTrigHandler(false);
     colorEnabled = settings.colorEnabled;
     colorEnableTrig.checked = colorEnabled;
+    colorEnableTrigHandler(false);
     //
     sceneDimmer = settings.sceneDimmer;
     zoom = settings.zoom;
@@ -268,16 +268,22 @@ positionEnableTrig.addEventListener("input", positionEnableTrigHandler);
 
 let wordEnabled = true;
 wordEnableTrig.checked = wordEnabled;
-wordEnableTrig.addEventListener("input", () =>
-  (
-    wordEnabled = !wordEnabled,
-    !wordEnabled ?
-      checkWordBtn.style.display = "none" :
-      checkWordBtn.style.display = "inline-block",
-    checkWordBtn.style.animationDelay = "0s",
-    saveSettings()
+const wordEnableTrigHandler = () => {
+  if (toggle) {
+    wordEnabled = !wordEnabled;
+  }
+
+  if (!wordEnabled) {
+    checkWordBtn.style.display = "none";
+  } else {
+    checkWordBtn.style.display = "inline-block";
+  }
+  
+  checkWordBtn.style.animationDelay = "0s";
+  saveSettings();
   )
-);
+};
+wordEnableTrig.addEventListener("input", wordEnableTrigHandler);
 
 // Shape disappears with corner
 let shapeEnabled = true;
@@ -286,8 +292,10 @@ let cornerEnabled = true;
 shapeEnableTrig.checked = shapeEnabled;
 cornerEnableTrig.checked = cornerEnabled;
 
-function shapeEnableTrigHandler() {
-  shapeEnabled = !shapeEnabled;
+const shapeEnableTrigHandler = (toggle = true) => {
+  if (toggle) {
+    shapeEnabled = !shapeEnabled;
+  }
 
   if (!shapeEnabled) {
     checkShapeBtn.style.display = "none";
@@ -298,9 +306,12 @@ function shapeEnableTrigHandler() {
   checkShapeBtn.style.animationDelay = "0s";
   saveSettings();
 }
+shapeEnableTrig.addEventListener("input", shapeEnableTrigHandler);
 
-cornerEnableTrig.addEventListener("input", () => {
-  cornerEnabled = !cornerEnabled;
+const cornerEnableTrigHandler = (toggle = true) => {
+  if (toggle) {
+    cornerEnabled = !cornerEnabled;
+  }
   
   if (!cornerEnabled) {
     shapeEnableTrig.removeEventListener("input", shapeEnableTrigHandler);
@@ -325,34 +336,44 @@ cornerEnableTrig.addEventListener("input", () => {
   innerFaceEls.forEach(face => face.style.animationDelay = "0s"),
   checkCornerBtn.style.animationDelay = "0s";
   saveSettings();
-});
-shapeEnableTrig.addEventListener("input", shapeEnableTrigHandler);
+};
+cornerEnableTrig.addEventListener("input", cornerEnableTrigHandler);
 
 let soundEnabled = true;
 soundEnableTrig.checked = faceEnabled;
-soundEnableTrig.addEventListener("input", () =>
-  (
-    soundEnabled = !soundEnabled,
-    !soundEnabled ?
-      checkSoundBtn.style.display = "none" :
-      checkSoundBtn.style.display = "inline-block",
-    checkSoundBtn.style.animationDelay = "0s",
-    saveSettings()
-  )
-);
+const soundEnableTrigHandler = (toggle = true) => {
+  if (toggle) {
+    soundEnabled = !soundEnabled;
+  }
+
+  if (!soundEnabled) {
+    checkSoundBtn.style.display = "none";
+  } else {
+    checkSoundBtn.style.display = "inline-block";
+  }
+
+  checkSoundBtn.style.animationDelay = "0s";
+  saveSettings();
+};
+soundEnableTrig.addEventListener("input", soundEnableTrigHandler);
 
 let colorEnabled = true;
 colorEnableTrig.checked = faceEnabled;
-colorEnableTrig.addEventListener("input", () =>
-  (
-    colorEnabled = !colorEnabled,
-    !colorEnabled ?
-      checkColorBtn.style.display = "none" :
-      checkColorBtn.style.display = "inline-block",
-    checkColorBtn.style.animationDelay = "0s",
-    saveSettings()
-  )
-);
+const colorEnableTrigHandler = (toggle = true) => {
+  if (toggle) {
+    colorEnabled = !colorEnabled;
+  }
+
+  if (!colorEnabled) {
+    checkColorBtn.style.display = "none";
+  } else {
+    checkColorBtn.style.display = "inline-block";
+  }
+
+  checkColorBtn.style.animationDelay = "0s"
+  saveSettings();
+};
+colorEnableTrig.addEventListener("input", colorEnableTrigHandler);
 
 function setFloorBackground(floor, dimPercent, tileAHexColor, tileBHexColor) {
   if (dimPercent > 1) {
