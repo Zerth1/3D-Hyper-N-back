@@ -30,6 +30,8 @@ function loadSettings() {
   if (settings) {
     wallsEnabled = settings.wallsEnabled;
     wallsEnableTrig.checked = wallsEnabled;
+    wallsEnableTrigHandler(false);
+
     cameraEnabled = settings.cameraEnabled;
     cameraEnableTrig.checked = cameraEnabled;
     faceEnabled = settings.faceEnabled;
@@ -187,16 +189,21 @@ let colorClasses = [
 // Editable settings
 let wallsEnabled = true;
 wallsEnableTrig.checked = wallsEnabled;
-wallsEnableTrig.addEventListener("input", () =>
-  (
-    wallsEnabled = !wallsEnabled,
-    !wallsEnabled ?
-      checkWallsBtn.style.display = "none" :
-      checkWallsBtn.style.display = "inline-block",
-    checkWallsBtn.style.animationDelay = "0s",
-    saveSettings()
-  )
-);
+const wallsEnableTrigHandler = (toggle = true) => {
+  if (toggle) {
+    wallsEnabled = !wallsEnabled;
+  }
+
+  if (!wallsEnabled) {
+    checkWallsBtn.style.display = "none";
+  } else {
+    checkWallsBtn.style.display = "inline-block";
+  }
+  
+  checkWallsBtn.style.animationDelay = "0s";
+  saveSettings();
+};
+wallsEnableTrig.addEventListener("input", wallsEnableTrigHandler);
 
 let cameraEnabled = true;
 cameraEnableTrig.checked = cameraEnabled;
