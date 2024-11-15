@@ -207,7 +207,7 @@ wordEnableTrig.addEventListener("input", wordEnableTrigHandler);
 shapeEnableTrigHandler(null, shapeEnabled);
 shapeEnableTrig.addEventListener("input", shapeEnableTrigHandler);
 
-cornerEnableTrigHandler(null, cornerEnable);
+cornerEnableTrigHandler(null, cornerEnabled);
 cornerEnableTrig.addEventListener("input", cornerEnableTrigHandler);
 
 soundEnableTrigHandler(null, faceEnabled);
@@ -228,49 +228,20 @@ perspectiveInput.addEventListener("input", perspectiveInputHandler);
 targetStimuliInputHandler(null, targetNumOfStimuli);
 targetStimuliInput.addEventListener("input", targetStimuliInputHandler);
 
-/** Start TODO */
-baseDelayInput.value = baseDelay;
+baseDelayInputHandler(null, baseDelay);
+baseDelayInput.addEventListener("input", baseDelayInputHandler);
 
-minDelayInput.value = minDelay;
+minDelayInputHandler(null, minDelay);
+minDelayInput.addEventListener("input", minDelayInputHandler);
 
-maxDelayInput.value = maxDelay;
-baseDelayInput.addEventListener("input", () => {
-  baseDelay = Math.min(Math.max(+baseDelayInput.value, minDelay), maxDelay);
-  if (+baseDelayInput.value < minDelay || +baseDelayInput.value > maxDelay) {
-    baseDelayInput.style.borderColor = "#f00";
-  } else {
-    baseDelayInput.style.borderColor = "#fff";
-  }
-});
-minDelayInput.addEventListener("input", () => {
-  minDelay = Math.min(+minDelayInput.value, baseDelay);
-  if (+minDelayInput.value > baseDelay) {
-    minDelayInput.style.borderColor = "#f00";
-  } else {
-    minDelayInput.style.borderColor = "#fff";
-  }
-});
-maxDelayInput.addEventListener("input", () => {
-  maxDelay = Math.max(+maxDelayInput.value, baseDelay);
-  if (+maxDelayInput.value < baseDelay) {
-    maxDelayInput.style.borderColor = "#f00";
-  } else {
-    maxDelayInput.style.borderColor = "#fff";
-  }
-});
+maxDelayInputHandler(null, maxDelay);
+maxDelayInput.addEventListener("input", maxDelayInputHandler);
 
+previousLevelThresholdInputHandler(null, prevLevelThreshold * 100);
+previousLevelThresholdInput.addEventListener("input", previousLevelThresholdInputHandler);
 
-previousLevelThresholdInput.value = prevLevelThreshold * 100;
-previousLevelThresholdInput.addEventListener("input", () =>
-  prevLevelThreshold = +previousLevelThresholdInput.value / 100
-);
-
-
-nextLevelThresholdInput.value = nextLevelThreshold * 100;
-nextLevelThresholdInput.addEventListener("input", () =>
-  nextLevelThreshold = +nextLevelThresholdInput.value / 100
-);
-/** End TODO */
+nextLevelThresholdInputHandler(null, nextLevelThreshold * 100);
+nextLevelThresholdInput.addEventListener("input", nextLevelThresholdInputHandler);
 
 loadSettings();
 
@@ -280,6 +251,7 @@ function wallsEnableTrigHandler(evt, defVal) {
     wallsEnableTrig.checked = defVal;
   } else {
     wallsEnabled = !wallsEnabled;
+    saveSettings();
   }
 
   if (!wallsEnabled) {
@@ -289,7 +261,6 @@ function wallsEnableTrigHandler(evt, defVal) {
   }
 
   checkWallsBtn.style.animationDelay = "0s";
-  saveSettings();
 }
 
 function cameraEnableTrigHandler(evt, defVal) {
@@ -297,6 +268,7 @@ function cameraEnableTrigHandler(evt, defVal) {
     cameraEnableTrig.checked = defVal;
   } else {
     cameraEnabled = !cameraEnabled;
+    saveSettings();
   }
 
   if (!cameraEnabled) {
@@ -306,7 +278,6 @@ function cameraEnableTrigHandler(evt, defVal) {
   }
 
   checkCameraBtn.style.animationDelay = "0s";
-  saveSettings();
 }
 
 function faceEnableTrigHandler(evt, defVal) {
@@ -314,6 +285,7 @@ function faceEnableTrigHandler(evt, defVal) {
     faceEnableTrig.checked = defVal;
   } else {
     faceEnabled = !faceEnabled;
+    saveSettings();
   }
 
   if (!faceEnabled) {
@@ -323,7 +295,6 @@ function faceEnableTrigHandler(evt, defVal) {
   }
 
   checkFaceBtn.style.animationDelay = "0s";
-  saveSettings();
 }
 
 function positionEnableTrigHandler(evt, defVal) {
@@ -331,6 +302,7 @@ function positionEnableTrigHandler(evt, defVal) {
     positionEnableTrig.checked = defVal;
   } else {
     positionEnabled = !positionEnabled;
+    saveSettings();
   }
 
   if (!positionEnabled) {
@@ -340,14 +312,14 @@ function positionEnableTrigHandler(evt, defVal) {
   }
 
   checkPositionBtn.style.animationDelay = "0s";
-  saveSettings();
 }
 
 function wordEnableTrigHandler(evt, defVal) {
-  if (defVal) {
+  if (defVal != null) {
     wordEnableTrig.checked = defVal;
   } else {
     wordEnabled = !wordEnabled;
+    saveSettings();
   }
 
   if (!wordEnabled) {
@@ -357,7 +329,6 @@ function wordEnableTrigHandler(evt, defVal) {
   }
   
   checkWordBtn.style.animationDelay = "0s";
-  saveSettings();
 }
 
 function shapeEnableTrigHandler(evt, defVal) {
@@ -365,6 +336,7 @@ function shapeEnableTrigHandler(evt, defVal) {
     shapeEnableTrig.checked = defVal;
   } else {
     shapeEnabled = !shapeEnabled;
+    saveSettings();
   }
 
   if (!shapeEnabled) {
@@ -374,7 +346,6 @@ function shapeEnableTrigHandler(evt, defVal) {
   }
 
   checkShapeBtn.style.animationDelay = "0s";
-  saveSettings();
 }
 
 function cornerEnableTrigHandler(evt, defVal) {
@@ -382,6 +353,7 @@ function cornerEnableTrigHandler(evt, defVal) {
     cornerEnableTrig.checked = defVal;
   } else {
     cornerEnabled = !cornerEnabled;
+    saveSettings();
   }
   
   if (!cornerEnabled) {
@@ -406,7 +378,6 @@ function cornerEnableTrigHandler(evt, defVal) {
   
   innerFaceEls.forEach(face => face.style.animationDelay = "0s"),
   checkCornerBtn.style.animationDelay = "0s";
-  saveSettings();
 }
 
 function soundEnableTrigHandler(evt, defVal) {
@@ -414,6 +385,7 @@ function soundEnableTrigHandler(evt, defVal) {
     soundEnableTrig.checked = defVal;
   } else {
     soundEnabled = !soundEnabled;
+    saveSettings();
   }
 
   if (!soundEnabled) {
@@ -423,7 +395,6 @@ function soundEnableTrigHandler(evt, defVal) {
   }
 
   checkSoundBtn.style.animationDelay = "0s";
-  saveSettings();
 }
 
 function colorEnableTrigHandler(evt, defVal) {
@@ -431,6 +402,7 @@ function colorEnableTrigHandler(evt, defVal) {
     colorEnableTrig.checked = defVal;
   } else {
     colorEnabled = !colorEnabled;
+    saveSettings();
   }
 
   if (!colorEnabled) {
@@ -440,7 +412,6 @@ function colorEnableTrigHandler(evt, defVal) {
   }
 
   checkColorBtn.style.animationDelay = "0s"
-  saveSettings();
 }
 
 function sceneDimmerInputHandler(evt, defVal) {
@@ -448,6 +419,7 @@ function sceneDimmerInputHandler(evt, defVal) {
     sceneDimmerInput.value = defVal;
   } else {
     sceneDimmer = +sceneDimmerInput.value;
+    saveSettings();
   }
 
   floors.forEach(floor =>
@@ -458,8 +430,6 @@ function sceneDimmerInputHandler(evt, defVal) {
       tileBHexColor
     )
   );
-
-  saveSettings();
 }
 
 function zoomInputHandler(evt, defVal) {
@@ -467,6 +437,7 @@ function zoomInputHandler(evt, defVal) {
     zoomInput.value = defVal;
   } else {
     zoom = +zoomInput.value;
+    saveSettings();
   }
   sceneWrapper.style.transform = `scale(${zoom})`;
 }
@@ -476,6 +447,7 @@ function perspectiveInputHandler(evt, defVal) {
     perspectiveInput.value = defVal;
   } else {
     perspective = +perspectiveInput.value;
+    saveSettings();
   }
   sceneWrapper.style.perspective = `${perspective}em`;
 }
@@ -484,7 +456,71 @@ function targetStimuliInputHandler(evt, defVal) {
   if (defVal) {
     targetStimuliInput.value = defVal;
   } else {
-    targetNumOfStimuli = +targetStimuliInput.value;  
+    targetNumOfStimuli = +targetStimuliInput.value;
+    saveSettings();  
+  }
+}
+
+function baseDelayInputHandler(evt, defVal) {
+  if (defVal != null) {
+    baseDelayInput.value = defVal;
+  } else {
+    baseDelay = Math.min(Math.max(+baseDelayInput.value, minDelay), maxDelay);
+    saveSettings();
+  }
+
+  if (+baseDelayInput.value < minDelay || +baseDelayInput.value > maxDelay) {
+    baseDelayInput.style.borderColor = "#f00";
+  } else {
+    baseDelayInput.style.borderColor = "#fff";
+  }
+}
+
+function minDelayInputHandler(evt, defVal) {
+  if (defVal != null) {
+    minDelayInput.value = defVal;
+  } else {
+    minDelay = Math.min(+minDelayInput.value, baseDelay);
+    saveSettings();
+  }
+
+  if (+minDelayInput.value > baseDelay) {
+    minDelayInput.style.borderColor = "#f00";
+  } else {
+    minDelayInput.style.borderColor = "#fff";
+  }
+}
+
+function maxDelayInputHandler(evt, defVal) {
+  if (defVal != null) {
+    maxDelayInput.value = defVal;
+  } else {
+    maxDelay = Math.max(+maxDelayInput.value, baseDelay);
+    saveSettings();
+  }
+
+  if (+maxDelayInput.value < baseDelay) {
+    maxDelayInput.style.borderColor = "#f00";
+  } else {
+    maxDelayInput.style.borderColor = "#fff";
+  }
+}
+
+function previousLevelThresholdInputHandler(evt, defVal) {
+  if (defVal != null) {
+    previousLevelThresholdInput.value = defVal * 100;
+  } else {
+    prevLevelThreshold = +previousLevelThresholdInput.value / 100;
+    saveSettings();
+  }
+}
+
+function nextLevelThresholdInputHandler(evt, defVal) {
+  if (defVal != null) {
+    nextLevelThresholdInput.value = defVal * 100;
+  } else {
+    nextLevelThreshold = +nextLevelThresholdInput.value / 100;  
+    saveSettings();
   }
 }
 
@@ -603,13 +639,21 @@ function loadSettings() {
     sceneDimmer = settings.sceneDimmer;
     sceneDimmerInputHandler(null, sceneDimmer);
     zoom = settings.zoom;
+    zoomInputHandler(null, zoom);
     perspective = settings.perspective;
+    perspectiveInputHandler(null, perspective);
     targetNumOfStimuli = settings.targetNumOfStimuli;
+    targetStimuliInputHandler(null, targetNumOfStimuli);
     baseDelay = settings.baseDelay;
+    baseDelayInputHandler(null, baseDelay);
     minDelay = settings.minDelay;
+    minDelayInputHandler(null, minDelay);
     maxDelay = settings.maxDelay;
+    maxDelayInputHandler(null, maxDelay);
     prevLevelThreshold = settings.prevLevelThreshold;
+    previousLevelThresholdInputHandler(null, prevLevelThreshold);
     nextLevelThreshold = settings.nextLevelThreshold;
+    nextLevelThresholdInputHandler(null, nextLevelThreshold);
   }
 }
 
