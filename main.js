@@ -1,5 +1,14 @@
 const LS_SETTINGS_KEY = "hyper-n-back";
 
+/**
+ * TODO:
+ * 1. Have defaults for settings somewhere and make a procedure to reset them;
+ * 2. Save N into settings and add control for that in the left panel too
+ * 3. Fix level-up and down
+ * 4. Create a modal class and use it for end-of-game summary
+ * 5. Save N values and place statistics somewhere
+ */
+
 // DOM elements
 let sceneWrapper = document.querySelector(".scene-wrapper");
 let scene = document.querySelector(".scene");
