@@ -101,7 +101,7 @@ body {
   cursor: pointer;
 }
 
-.toggle-trigger:checked + .toggle-btn {
+.toggle-trigger:checked + .toggle-btn, .toggle-btn:hover {
   color: #000;
   background-color: #fff;
 }
@@ -498,8 +498,15 @@ body {
   font-size: 18px;
   border: 0;
   border-radius: .75em;
-  background-color: #fff;
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #fff;
   cursor: pointer;
+}
+
+.setting-btn:hover {
+  background-color: #fff;
+  color: #000;
 }
 
 .btn.right {

@@ -1,7 +1,5 @@
 let history = {
-  1: {
-    // "2024-11-03": []
-  },
+  1: {},
   2: {},
   3: {},
   4: {},
@@ -11,6 +9,7 @@ let history = {
   8: {},
   9: {}
 };
+const historyCopy = JSON.parse(JSON.stringify(history));
 
 // Functions
 function wallsEnableTrigHandler(evt, defVal) {
@@ -380,6 +379,17 @@ repeating-conic-gradient(
 )`;
   }
 }
+
+function resetStats() {
+  const confirmed = confirm("Are you sure you want to reset all statistics?\nThis operation is irreversible.");
+  if (!confirmed) {
+    return;
+  }
+
+  history = historyCopy;
+
+  location.reload();
+};
 
 function resetSettings() {
   const confirmed = confirm("Are you sure you want to reset all settings?\nThis operation is irreversible.");
@@ -1101,6 +1111,7 @@ const previousLevelThresholdInput = document.querySelector("#previousLevelThresh
 const nextLevelThresholdInput = document.querySelector("#nextLevelThreshold");
 
 const resetSettingsButton = document.querySelector("#reset-settings");
+const resetStatsButton = document.querySelector("#reset-stats");
 const openStatsButton = document.querySelector("#open-stats");
 
 const [
@@ -1327,6 +1338,7 @@ nextLevelThresholdInputHandler(null, nextLevelThreshold);
 nextLevelThresholdInput.addEventListener("input", nextLevelThresholdInputHandler);
 
 resetSettingsButton.addEventListener("click", resetSettings);
+resetStatsButton.addEventListener("click", resetStats);
 openStatsButton.addEventListener("click", openStats);
 
 ["walls", "camera", "face", "position", "word", "shape", "corner", "sound", "color"]
