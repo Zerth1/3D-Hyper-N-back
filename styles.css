@@ -13,11 +13,13 @@
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #a9a9a9;
+  background-color: rgb(136, 136, 136);
+  border-left: 1px solid rgb(17, 17, 17);
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #595959;
+  background-color: rgb(17, 17, 17);
+  border-left: 1px solid rgb(136, 136, 136);
 }
 
 body {
@@ -831,4 +833,29 @@ dialog .dialog-content {
   font-size: 1.25rem;
   margin-top: 0.5rem;
   margin-left: 2rem;
+}
+
+.bind-form {
+  display: grid;
+  gap: 1rem;
+  font-size: 1.5rem;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto;
+}
+
+.bind-form input {
+  all: unset;
+  width: 1ch;
+  border-bottom: 3px solid;
+}
+
+.bind-actions {
+  display: flex;
+  width: 200px;
+  margin: 0 auto;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.bind-actions * {
+  flex: 1 0 0;
 }

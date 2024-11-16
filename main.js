@@ -1,6 +1,17 @@
-/**
- * TODO: Custom key binding
- */
+let keyBindings = {
+  "Walls": "a",
+  "Camera": "s",
+  "Face": "d",
+  "Spatial": "f",
+  "Word": "g",
+  "Shape": "h",
+  "Corner": "j",
+  "Sound": "k",
+  "Color": "l",
+  "Play": "q",
+  "Stop": "p"
+};
+const keyBindingsCopy = JSON.parse(JSON.stringify(keyBindings));
 
 let history = {
   1: {},
@@ -484,6 +495,13 @@ function loadSettings() {
     maxAllowedMistakesInputHandler(null, settings.maxAllowedMistakes);
     previousLevelThresholdInputHandler(null, settings.prevLevelThreshold);
     nextLevelThresholdInputHandler(null, settings.nextLevelThreshold);
+  }
+}
+
+function openBindings() {
+  bindDialogContent.parentElement.show();
+  for (const [stim, key] of Object.entries(keyBindings)) {
+    document.querySelector("#binding-" + stim).value = key;
   }
 }
 
@@ -1152,6 +1170,7 @@ const checkColorBtn = document.querySelector(".check-color");
 const nBackDisplay = document.querySelector("#n-back-display");
 const recapDialogContent = document.querySelector("#recap-dialog .dialog-content");
 const statsDialogContent = document.querySelector("#stats-dialog .dialog-content");
+const bindDialogContent = document.querySelector("#bind-dialog .dialog-content");
 
 const nLevelInput = document.querySelector("#n-level");
 const sceneDimmerInput = document.querySelector("#scene-dimmer");
@@ -1169,6 +1188,7 @@ const nextLevelThresholdInput = document.querySelector("#nextLevelThreshold");
 const resetSettingsButton = document.querySelector("#reset-settings");
 const resetStatsButton = document.querySelector("#reset-stats");
 const openStatsButton = document.querySelector("#open-stats");
+const openBindingsButton = document.querySelector("#open-bindings");
 
 const [
   wallsEnableTrig,
@@ -1403,6 +1423,7 @@ nextLevelThresholdInput.addEventListener("input", nextLevelThresholdInputHandler
 resetSettingsButton.addEventListener("click", () => resetSettings(null));
 resetStatsButton.addEventListener("click", () => resetStats(null));
 openStatsButton.addEventListener("click", () => openStats(null));
+openBindingsButton.addEventListener("click", () => openBindings(null));
 
 ["walls", "camera", "face", "position", "word", "shape", "corner", "sound", "color"]
   .forEach(sense => {

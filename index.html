@@ -132,6 +132,33 @@
 			</div>
 		</div>
 	</dialog>
+
+	<dialog id="bind-dialog">
+		<label class="close-button" onClick="bindDialogContent.parentElement.close()">
+			<i class="bi bi-x-lg"></i>
+		</label>
+
+  		<div class="dialog-content">
+			<p style="text-align: center;">(Not implemented yet)</p>
+
+			<div class="bind-form">
+				<label>Walls</label><input id="binding-Walls" type="text">
+				<label>Camera</label><input id="binding-Camera" type="text">
+				<label>Face</label><input id="binding-Face" type="text">
+				<label>Spatial</label><input id="binding-Spatial" type="text">
+				<label>Word</label><input id="binding-Word" type="text">
+				<label>Shape</label><input id="binding-Shape" type="text">
+				<label>Corner</label><input id="binding-Corner" type="text">
+				<label>Sound</label><input id="binding-Sound" type="text">
+				<label>Color</label><input id="binding-Color" type="text">
+			</div>
+
+			<div class="bind-actions">
+				<button class="setting-btn">Reset</button>
+				<button class="setting-btn">Save</button>
+			</div>
+		</div>
+	</dialog>
 	
 	<input hidden id="settings-open" type="checkbox">
 	<div class="settings-wrapper">
@@ -159,6 +186,9 @@
 			<input class="toggle-trigger" hidden id="enable-color" type="checkbox" checked>
 			<label class="toggle-btn" for="enable-color">Color</label>
 		  </div>
+		</div>
+		<div class="setting">
+			<button id="open-bindings" class="setting-btn">Change Bindings</button>
 		</div>
 		<div class="setting">
 			<button id="open-stats" class="setting-btn">Open Statistics</button>
