@@ -422,6 +422,17 @@ function resetSettings() {
   location.reload();
 };
 
+function loadHistory() {
+  const _history = JSON.parse(localStorage.getItem(LS_HISTORY_KEY));
+  if (_history) {
+    history = _history;
+  }
+}
+
+function saveHistory() {
+  localStorage.setItem(LS_HISTORY_KEY, JSON.stringify(history));
+}
+
 function saveSettings() {
   const stringifiedSettings = JSON.stringify({
     wallsEnabled,
@@ -472,8 +483,48 @@ function loadSettings() {
   }
 }
 
-function openStats() {
+function getBar(n) {
+  const html = `<div class="bar-chart-bar" style="height: ${n*2}rem;"><div>${n}</div></div>`;
+  const wrap = document.createElement("DIV");
+  wrap.innerHTML = html;
+  return wrap.firstChild;
+}
+
+function openStats(_dim) {
   statsDialogContent.parentElement.show();
+  const dim = _dim || localStorage.getItem("last-n") || 1;
+  const radios = [ ...document.querySelectorAll("input[name='dimension']") ];
+  radios[dim - 1].checked = true;
+  const _history = history[dim];
+  const bars = document.querySelector(".bar-chart-bars");
+  bars.innerHTML = "";
+  let avgNLevel = 0;
+  let maxNLevel = 0;
+  let right = 0;
+  let missed = 0;
+  let wrong = 0;
+  const entries = Object.entries(_history);
+  for (const [ date, points ] of entries) {
+    let _avgNLevel = 0;
+    let _maxNLevel = 0;
+    for (const point of points) {
+      _avgNLevel += point.nLevel;
+      _maxNLevel = Math.max(_maxNLevel, point.nLevel);
+      maxNLevel = Math.max(maxNLevel, _maxNLevel);
+      right += point.right;
+      missed += point.missed;
+      wrong += point.wrong;
+    }
+    _avgNLevel = _avgNLevel / points.length;
+    avgNLevel += _avgNLevel;
+    bars.appendChild(getBar(_avgNLevel));
+  }
+  avgNLevel = avgNLevel / entries.length;
+  document.querySelector("#sc-avg").innerHTML = avgNLevel || "-";
+  document.querySelector("#sc-max").innerHTML = maxNLevel || "-";
+  document.querySelector("#sc-right").innerHTML = right || "-";
+  document.querySelector("#sc-missed").innerHTML = missed || "-";
+  document.querySelector("#sc-wrong").innerHTML = wrong || "-";
 }
 
 function random(iterable) {
@@ -722,7 +773,6 @@ function getGameCycle(n) {
     if (i > length - 1) {
       
       let correctStimuli = 0;
-      dimensions++;
       if (wallsEnabled) {
         dimensions++;
         correctStimuli += rightWalls;
@@ -850,6 +900,7 @@ function getGameCycle(n) {
       console.log("history", history);
       
       saveSettings();
+      saveHistory();
       return;
     }
     
@@ -1066,6 +1117,7 @@ function checkHandler(sense) {
 }
 
 const LS_SETTINGS_KEY = "hyper-n-back";
+const LS_HISTORY_KEY = "hyper-history";
 
 // DOM elements
 const sceneWrapper = document.querySelector(".scene-wrapper");
@@ -1283,6 +1335,13 @@ let wrongSound = 0;
 let wrongColor = 0;
 
 // Events
+[ ...document.querySelectorAll("input[name='dimension'") ].forEach(el => {
+  el.addEventListener("click", function(evt) {
+      const dim = evt.target.value;
+      openStats(dim);
+  });
+});
+
 wallsEnableTrigHandler(null, wallsEnabled);
 wallsEnableTrig.addEventListener("input", wallsEnableTrigHandler);
 
@@ -1337,9 +1396,9 @@ previousLevelThresholdInput.addEventListener("input", previousLevelThresholdInpu
 nextLevelThresholdInputHandler(null, nextLevelThreshold);
 nextLevelThresholdInput.addEventListener("input", nextLevelThresholdInputHandler);
 
-resetSettingsButton.addEventListener("click", resetSettings);
-resetStatsButton.addEventListener("click", resetStats);
-openStatsButton.addEventListener("click", openStats);
+resetSettingsButton.addEventListener("click", () => resetSettings(null));
+resetStatsButton.addEventListener("click", () => resetStats(null));
+openStatsButton.addEventListener("click", () => openStats(null));
 
 ["walls", "camera", "face", "position", "word", "shape", "corner", "sound", "color"]
   .forEach(sense => {
@@ -1385,3 +1444,4 @@ document.addEventListener(
 );
 
 loadSettings();
+loadHistory();
