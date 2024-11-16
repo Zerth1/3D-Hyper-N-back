@@ -400,6 +400,9 @@ function resetSettings() {
   maxDelay = defVal_maxDelay;
   prevLevelThreshold = defVal_prevLevelThreshold;
   nextLevelThreshold = defVal_nextLevelThreshold;
+
+  saveSettings();
+  location.reload();
 };
 
 function saveSettings() {
