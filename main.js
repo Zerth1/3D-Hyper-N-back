@@ -5,8 +5,8 @@ function wallsEnableTrigHandler(evt, defVal) {
     wallsEnabled = defVal;
   } else {
     wallsEnabled = !wallsEnabled;
+    saveSettings();
   }
-  saveSettings();
 
   if (!wallsEnabled) {
     checkWallsBtn.style.display = "none";
@@ -23,8 +23,8 @@ function cameraEnableTrigHandler(evt, defVal) {
     cameraEnabled = defVal;
   } else {
     cameraEnabled = !cameraEnabled;
+    saveSettings();
   }
-  saveSettings();
 
   if (!cameraEnabled) {
     checkCameraBtn.style.display = "none";
@@ -41,8 +41,8 @@ function faceEnableTrigHandler(evt, defVal) {
     faceEnabled = defVal;
   } else {
     faceEnabled = !faceEnabled;
+    saveSettings();
   }
-  saveSettings();
 
   if (!faceEnabled) {
     checkFaceBtn.style.display = "none";
@@ -59,8 +59,8 @@ function positionEnableTrigHandler(evt, defVal) {
     positionEnabled = defVal;
   } else {
     positionEnabled = !positionEnabled;
+    saveSettings();
   }
-  saveSettings();
 
   if (!positionEnabled) {
     checkPositionBtn.style.display = "none";
@@ -77,8 +77,8 @@ function wordEnableTrigHandler(evt, defVal) {
     wordEnabled = defVal;
   } else {
     wordEnabled = !wordEnabled;
+    saveSettings();
   }
-  saveSettings();
 
   if (!wordEnabled) {
     checkWordBtn.style.display = "none";
@@ -95,8 +95,8 @@ function shapeEnableTrigHandler(evt, defVal) {
     shapeEnabled = defVal;
   } else {
     shapeEnabled = !shapeEnabled;
+    saveSettings();
   }
-  saveSettings();
 
   if (!shapeEnabled) {
     checkShapeBtn.style.display = "none";
@@ -113,8 +113,8 @@ function cornerEnableTrigHandler(evt, defVal) {
     cornerEnabled = defVal;
   } else {
     cornerEnabled = !cornerEnabled;
+    saveSettings();
   }
-  saveSettings();
   
   if (!cornerEnabled) {
     shapeEnableTrig.removeEventListener("input", shapeEnableTrigHandler);
@@ -146,8 +146,8 @@ function soundEnableTrigHandler(evt, defVal) {
     soundEnabled = defVal;
   } else {
     soundEnabled = !soundEnabled;
+    saveSettings();
   }
-  saveSettings();
 
   if (!soundEnabled) {
     checkSoundBtn.style.display = "none";
@@ -164,8 +164,8 @@ function colorEnableTrigHandler(evt, defVal) {
     colorEnabled = defVal;
   } else {
     colorEnabled = !colorEnabled;
+    saveSettings();
   }
-  saveSettings();
 
   if (!colorEnabled) {
     checkColorBtn.style.display = "none";
@@ -182,8 +182,8 @@ function nLevelInputHandler(evt, defVal) {
     nLevel = defVal;
   } else {
     nLevel = Math.min(Math.max(+nLevelInput.value, 1), 9);
+    saveSettings();
   }
-  saveSettings();
 
   if (+nLevelInput.value < 1 || +nLevelInput.value > 9) {
     nLevelInput.style.borderColor = "#f00";
@@ -199,8 +199,8 @@ function sceneDimmerInputHandler(evt, defVal) {
     sceneDimmer = defVal;
   } else {
     sceneDimmer = +sceneDimmerInput.value;
+    saveSettings();
   }
-  saveSettings();
 
   floors.forEach(floor =>
     setFloorBackground(
@@ -218,8 +218,8 @@ function zoomInputHandler(evt, defVal) {
     zoom = defVal;
   } else {
     zoom = +zoomInput.value;
+    saveSettings();
   }
-  saveSettings();
   sceneWrapper.style.transform = `scale(${zoom})`;
 }
 
@@ -229,8 +229,8 @@ function perspectiveInputHandler(evt, defVal) {
     perspective = defVal;
   } else {
     perspective = +perspectiveInput.value;
+    saveSettings();
   }
-  saveSettings();
   sceneWrapper.style.perspective = `${perspective}em`;
 }
 
@@ -240,8 +240,8 @@ function targetStimuliInputHandler(evt, defVal) {
     targetNumOfStimuli = defVal;
   } else {
     targetNumOfStimuli = Math.min(Math.max(+targetStimuliInput.value, 1), 30);
+    saveSettings();
   }
-  saveSettings();
 
   if (+targetStimuliInput.value < 1 || +targetStimuliInput.value > 30) {
     targetStimuliInput.style.borderColor = "#f00";
@@ -256,8 +256,8 @@ function baseDelayInputHandler(evt, defVal) {
     baseDelay = defVal;
   } else {
     baseDelay = Math.min(Math.max(+baseDelayInput.value, 2000), 20000);
+    saveSettings();
   }
-  saveSettings();
 
   if (+baseDelayInput.value < 2000 || +baseDelayInput.value > 20000) {
     baseDelayInput.style.borderColor = "#f00";
@@ -272,8 +272,8 @@ function maxAllowedMistakesInputHandler(evt, defVal) {
     maxAllowedMistakes = defVal;
   } else {
     maxAllowedMistakes = Math.min(Math.max(+maxAllowedMistakesInput.value, 0), 30);
+    saveSettings();
   }
-  saveSettings();
 
   if (+maxAllowedMistakesInput.value < 0 || +maxAllowedMistakesInput.value > 30) {
     maxAllowedMistakesInput.style.borderColor = "#f00";
@@ -288,8 +288,8 @@ function previousLevelThresholdInputHandler(evt, defVal) {
     prevLevelThreshold = defVal;
   } else {
     prevLevelThreshold = +previousLevelThresholdInput.value / 100;
+    saveSettings();
   }
-  saveSettings();
 }
 
 function nextLevelThresholdInputHandler(evt, defVal) {
@@ -298,8 +298,8 @@ function nextLevelThresholdInputHandler(evt, defVal) {
     nextLevelThreshold = defVal;
   } else {
     nextLevelThreshold = +nextLevelThresholdInput.value / 100;  
+    saveSettings();
   }
-  saveSettings();
 }
 
 function setFloorBackground(floor, dimPercent, tileAHexColor, tileBHexColor) {
@@ -763,11 +763,11 @@ function getGameCycle(n) {
       stop(); // This resets stuff (matchingStimuli etc...)
 
       const lines = {
-        correctPercentage: `You've got ${Math.floor(percentage * 100)} percent of correct stimuli.`,
-        numOfErrors: `With ${(mistakes < 1) ? "no" : mistakes} mistake${(mistakes > 1) ? "s" : ""}.`,
-        levelUp: "Advancing to the next level.",
-        levelDown: "Going back to the previous level.",
-        levelSame: "Level remains the same.",
+        correctPercentage: `${Math.floor(percentage * 100)}% of correct stimuli.`,
+        numOfErrors: `${(mistakes < 1) ? "No" : mistakes} mistake${(mistakes > 1) ? "s" : ""}.`,
+        levelUp: `N back increased to ${nLevel + 1}.`,
+        levelDown: `N back decreased to ${nLevel - 1}.`,
+        levelSame: "N back stays the same.",
       };
 
       const levelUpCond = (percentage >= nextLevelThreshold) && (mistakes <= maxAllowedMistakes) && nLevel < 9;
@@ -786,7 +786,7 @@ function getGameCycle(n) {
         recapDialogContent.innerHTML += lines.levelSame + "<br><br>";
       }
 
-      speak(lines.correctPercentage)
+      /*speak(lines.correctPercentage)
         .onend = function () {
           speak(lines.numOfErrors);
 
@@ -797,8 +797,9 @@ function getGameCycle(n) {
           } else {
             speak(lines.levelSame);
           }
-        };
+        };*/
       
+      saveSettings();
       return;
     }
     
