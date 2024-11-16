@@ -521,10 +521,10 @@ function openStats(_dim) {
     }
     _avgNLevel = _avgNLevel / points.length;
     avgNLevel += _avgNLevel;
-    bars.appendChild(getBar(_avgNLevel));
+    bars.appendChild(getBar(_avgNLevel.toFixed(1)));
   }
   avgNLevel = avgNLevel / entries.length;
-  document.querySelector("#sc-avg").innerHTML = avgNLevel || "-";
+  document.querySelector("#sc-avg").innerHTML = avgNLevel.toFixed(1) || "-";
   document.querySelector("#sc-max").innerHTML = maxNLevel || "-";
   document.querySelector("#sc-right").innerHTML = right || "-";
   document.querySelector("#sc-missed").innerHTML = missed || "-";
