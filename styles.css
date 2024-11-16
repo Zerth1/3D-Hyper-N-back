@@ -132,7 +132,7 @@ body {
   left: 100%;
   transform-origin: bottom left;
   transform: rotateZ(90deg);
-  padding: .3em .15em;
+  padding: .15em;
   font-size: 32px;
   white-space: nowrap;
   background: #000;
@@ -169,11 +169,15 @@ body {
 }
 
 #settings-open:not(:checked) ~ .settings-wrapper label[for="settings-open"]::after {
-  content: "🔧";
+  font-family: "bootstrap-icons";
+  content: "\F3E5";
+  cursor: pointer;
 }
 
 #settings-open:checked ~ .settings-wrapper label[for="settings-open"]::after {
-  content: "✖️";
+  font-family: "bootstrap-icons";
+  content: "\F623";
+  cursor: pointer;
 }
 
 .scene-wrapper {
@@ -490,6 +494,16 @@ body {
     background-color .3s ease,
     box-shadow 1.2s ease;
   animation: fade-in 1s ease backwards 2.5s;
+}
+
+.setting-button {
+  height: 3em;
+  padding: 0;
+  font-family: inherit;
+  border: 0;
+  border-radius: .75em;
+  background-color: #fff;
+  cursor: pointer;
 }
 
 .btn.right {

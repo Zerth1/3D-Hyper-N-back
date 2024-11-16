@@ -378,6 +378,11 @@ repeating-conic-gradient(
 }
 
 function resetSettings() {
+  const confirmed = confirm("Are you sure you want to reset all settings?\nThis operation is irreversible.");
+  if (!confirmed) {
+    return;
+  }
+  
   wallsEnabled = defVal_wallsEnabled;
   cameraEnabled = defVal_cameraEnabled;
   faceEnabled = defVal_faceEnabled;
@@ -1073,6 +1078,8 @@ const maxDelayInput = document.querySelector("#maxDelay");
 const previousLevelThresholdInput = document.querySelector("#previousLevelThreshold");
 const nextLevelThresholdInput = document.querySelector("#nextLevelThreshold");
 
+const resetSettingsButton = document.querySelector("#reset-settings");
+
 const [
   wallsEnableTrig,
   cameraEnableTrig,
@@ -1302,6 +1309,8 @@ previousLevelThresholdInput.addEventListener("input", previousLevelThresholdInpu
 
 nextLevelThresholdInputHandler(null, nextLevelThreshold * 100);
 nextLevelThresholdInput.addEventListener("input", nextLevelThresholdInputHandler);
+
+resetSettingsButton.addEventListener("click", resetSettings);
 
 
 ["walls", "camera", "face", "position", "word", "shape", "corner", "sound", "color"]
