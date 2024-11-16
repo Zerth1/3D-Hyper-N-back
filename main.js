@@ -1,3 +1,17 @@
+let history = {
+  1: {
+    // "2024-11-03": []
+  },
+  2: {},
+  3: {},
+  4: {},
+  5: {},
+  6: {},
+  7: {},
+  8: {},
+  9: {}
+};
+
 // Functions
 function wallsEnableTrigHandler(evt, defVal) {
   if (defVal != null) {
@@ -448,6 +462,10 @@ function loadSettings() {
   }
 }
 
+function openStats() {
+  statsDialogContent.parentElement.show();
+}
+
 function random(iterable) {
   return iterable[
     Math.floor(
@@ -688,37 +706,48 @@ function getGameCycle(n) {
     }
     
     let length = targetNumOfStimuli * (n + 2) + targetNumOfStimuli;
+    let dimensions = 0;
     
     // End game
     if (i > length - 1) {
       
       let correctStimuli = 0;
+      dimensions++;
       if (wallsEnabled) {
+        dimensions++;
         correctStimuli += rightWalls;
       }
       if (cameraEnabled) {
+        dimensions++;
         correctStimuli += rightCamera;
       }
       if (faceEnabled) {
+        dimensions++;
         correctStimuli += rightFace;
       }
       if (positionEnabled) {
+        dimensions++;
         correctStimuli += rightPosition;
       }
       
       if (wordEnabled) {
+        dimensions++;
         correctStimuli += rightWord;
       }
       if (cornerEnabled) {
+        dimensions++;
         correctStimuli += rightCorner;
         if (shapeEnabled) {
+          dimensions++;
           correctStimuli += rightShape;
         }
       }
       if (soundEnabled) {
+        dimensions++;
         correctStimuli += rightSound;
       }
       if (colorEnabled) {
+        dimensions++;
         correctStimuli += rightColor;
       }
       let percentage = correctStimuli / matchingStimuli;
@@ -759,45 +788,56 @@ function getGameCycle(n) {
       console.log("correctStimuli", correctStimuli);
       console.log("missed", missed);
       console.log("mistakes", mistakes);
+      console.log("dimensions", dimensions);
       
       stop(); // This resets stuff (matchingStimuli etc...)
 
-      const lines = {
-        correctPercentage: `${Math.floor(percentage * 100)}% of correct stimuli.`,
-        numOfErrors: `${(mistakes < 1) ? "No" : mistakes} mistake${(mistakes > 1) ? "s" : ""}.`,
-        levelUp: `N back increased to ${nLevel + 1}.`,
-        levelDown: `N back decreased to ${nLevel - 1}.`,
-        levelSame: "N back stays the same.",
-      };
+      const resDim = document.querySelector("#res-dim");
+      const resRight = document.querySelector("#sc-res-right");
+      const resMissed = document.querySelector("#sc-res-missed");
+      const resWrong = document.querySelector("#sc-res-wrong");
+      const lvlRes = document.querySelectorAll("[class^='lvl-res']");
+      [...lvlRes].forEach(el => el.style.display = "none");
+
+      resDim.innerHTML = dimensions + "D";
+      resRight.innerHTML = correctStimuli;
+      resMissed.innerHTML = missed;
+      resWrong.innerHTML = mistakes;
 
       const levelUpCond = (percentage >= nextLevelThreshold) && (mistakes <= maxAllowedMistakes) && nLevel < 9;
       const levelDownCond = ((percentage < prevLevelThreshold) || (mistakes > maxAllowedMistakes)) && nLevel > 1;
-      
-      recapDialogContent.parentElement.show();
-      recapDialogContent.innerHTML = lines.correctPercentage + "<br><br>";
-      recapDialogContent.innerHTML += lines.numOfErrors + "<br><br>";
+
+      localStorage.setItem("last-n", nLevel);
+      const historyPoint = {
+        nLevel,
+        right: correctStimuli,
+        missed,
+        wrong: mistakes, 
+        outcome: 0
+      };
+
       if (levelUpCond) {
+        historyPoint.outcome = 1;
         nLevelInputHandler(null, nLevel + 1);
-        recapDialogContent.innerHTML += lines.levelUp + "<br><br>";
+        document.querySelector(".lvl-res-move").style.display = "block";
+        document.querySelector(".lvl-before").innerHTML = nLevel - 1;
+        document.querySelector(".lvl-after").innerHTML = nLevel;
       } else if (levelDownCond) {
+        historyPoint.outcome = -1;
         nLevelInputHandler(null, nLevel - 1);
-        recapDialogContent.innerHTML += lines.levelDown + "<br><br>";
+        document.querySelector(".lvl-res-move").style.display = "block";
+        document.querySelector(".lvl-before").innerHTML = nLevel + 1;
+        document.querySelector(".lvl-after").innerHTML = nLevel;
       } else {
-        recapDialogContent.innerHTML += lines.levelSame + "<br><br>";
+        document.querySelector(".lvl-res-stay").style.display = "block";
+        document.querySelector(".lvl-stays").innerHTML = nLevel;
       }
-
-      /*speak(lines.correctPercentage)
-        .onend = function () {
-          speak(lines.numOfErrors);
-
-          if (levelUpCond) {
-            speak(lines.levelUp);
-          } else if (levelDownCond) {
-            speak(lines.levelDown);
-          } else {
-            speak(lines.levelSame);
-          }
-        };*/
+      recapDialogContent.parentElement.show();
+      
+      const datestamp = new Date().toLocaleDateString("sv");
+      history[dimensions][datestamp] = history[dimensions][datestamp] || [];
+      history[dimensions][datestamp].push(historyPoint);
+      console.log("history", history);
       
       saveSettings();
       return;
@@ -1045,6 +1085,7 @@ const checkColorBtn = document.querySelector(".check-color");
 
 const nBackDisplay = document.querySelector("#n-back-display");
 const recapDialogContent = document.querySelector("#recap-dialog .dialog-content");
+const statsDialogContent = document.querySelector("#stats-dialog .dialog-content");
 
 const nLevelInput = document.querySelector("#n-level");
 const sceneDimmerInput = document.querySelector("#scene-dimmer");
@@ -1060,6 +1101,7 @@ const previousLevelThresholdInput = document.querySelector("#previousLevelThresh
 const nextLevelThresholdInput = document.querySelector("#nextLevelThreshold");
 
 const resetSettingsButton = document.querySelector("#reset-settings");
+const openStatsButton = document.querySelector("#open-stats");
 
 const [
   wallsEnableTrig,
@@ -1285,7 +1327,7 @@ nextLevelThresholdInputHandler(null, nextLevelThreshold);
 nextLevelThresholdInput.addEventListener("input", nextLevelThresholdInputHandler);
 
 resetSettingsButton.addEventListener("click", resetSettings);
-
+openStatsButton.addEventListener("click", openStats);
 
 ["walls", "camera", "face", "position", "word", "shape", "corner", "sound", "color"]
   .forEach(sense => {

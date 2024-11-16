@@ -17,7 +17,128 @@
 		<label class="close-button" onClick="recapDialogContent.parentElement.close()">
 			<i class="bi bi-x-lg"></i>
 		</label>
-  		<div class="dialog-content"></div>
+
+  		<div class="dialog-content">
+			<div id="res-dim" style="font-size: 2.5rem; text-align: center; color: #fffd;">1D</div>
+
+			<div class="stats-cards" style="font-size: 1.75rem; margin-top: 2rem;">
+				<div class="stats-card">
+					<div class="stats-card-title">Right</div>
+					<div id="sc-res-right" class="stats-card-value">0</div>
+				</div>
+				<div class="stats-card">
+					<div class="stats-card-title">Missed</div>
+					<div id="sc-res-missed" class="stats-card-value">0</div>
+				</div>
+				<div class="stats-card">
+					<div class="stats-card-title">Wrong</div>
+					<div id="sc-res-wrong" class="stats-card-value">0</div>
+				</div>
+			</div>
+
+			<div style="text-align: center; margin-top: 2rem; font-size: 2.5rem;">
+				<div class="lvl-res-move">N = <span class="lvl-before">1</span> <i class="bi bi-arrow-right"> </i><span class="lvl-after" style="font-size: 4rem;">2</span></div>
+				<div class="lvl-res-stay">N = <span class="lvl-stays">1</span></div>
+			</div>
+		</div>
+	</dialog>
+
+	<dialog id="stats-dialog">
+		<label class="close-button" onClick="statsDialogContent.parentElement.close()">
+			<i class="bi bi-x-lg"></i>
+		</label>
+
+  		<div class="dialog-content">
+			<div class="radio-dimensions">
+				<label class="radio-dimension">
+					<input type="radio" name="dimension" value="1" hidden>
+					<div>1D</div>
+				</label>
+				<label class="radio-dimension">
+					<input type="radio" name="dimension" value="2" hidden>
+					<div>2D</div>
+				</label>
+				<label class="radio-dimension">
+					<input type="radio" name="dimension" value="3" hidden>
+					<div>3D</div>
+				</label>
+				<label class="radio-dimension">
+					<input type="radio" name="dimension" value="4" hidden>
+					<div>4D</div>
+				</label>
+				<label class="radio-dimension">
+					<input type="radio" name="dimension" value="5" hidden>
+					<div>5D</div>
+				</label>
+				<label class="radio-dimension">
+					<input type="radio" name="dimension" value="6" hidden>
+					<div>6D</div>
+				</label>
+				<label class="radio-dimension">
+					<input type="radio" name="dimension" value="7" hidden>
+					<div>7D</div>
+				</label>
+				<label class="radio-dimension">
+					<input type="radio" name="dimension" value="8" hidden>
+					<div>8D</div>
+				</label>
+				<label class="radio-dimension">
+					<input type="radio" name="dimension" value="9" hidden>
+					<div>9D</div>
+				</label>
+			</div>
+
+			<div class="stats-cards">
+				<div class="stats-card">
+					<div class="stats-card-title">Avg N</div>
+					<div id="sc-avg" class="stats-card-value">5</div>
+				</div>
+				<div class="stats-card">
+					<div class="stats-card-title">Max N</div>
+					<div id="sc-max" class="stats-card-value">7</div>
+				</div>
+				<div class="stats-card">
+					<div class="stats-card-title">Right</div>
+					<div id="sc-right" class="stats-card-value">123</div>
+				</div>
+				<div class="stats-card">
+					<div class="stats-card-title">Missed</div>
+					<div id="sc-missed" class="stats-card-value">15</div>
+				</div>
+				<div class="stats-card">
+					<div class="stats-card-title">Wrong</div>
+					<div id="sc-wrong" class="stats-card-value">8</div>
+				</div>
+			</div>
+
+			<div class="bar-chart-wrap">
+				<div class="bar-chart">
+					<div class="bar-chart-axis">
+						<div>9</div>
+						<div>8</div>
+						<div>7</div>
+						<div>6</div>
+						<div>5</div>
+						<div>4</div>
+						<div>3</div>
+						<div>2</div>
+						<div>1</div>
+					</div>
+					<div class="bar-chart-bars">
+						<div class="bar-chart-bar" style="height: 10rem;">
+							<div>5</div>
+						</div>
+						<div class="bar-chart-bar" style="height: 4rem;">
+							<div>2</div>
+						</div>
+						<div class="bar-chart-bar" style="height: 14rem;">
+							<div>7</div>
+						</div>
+					</div>
+				</div>
+				<div class="bar-chart-title">N over time (1 bar = 1 day)</div>
+			</div>
+		</div>
 	</dialog>
 	
 	<input hidden id="settings-open" type="checkbox">
@@ -35,7 +156,6 @@
 			<label class="toggle-btn" for="enable-face">Face</label>
 			<input class="toggle-trigger" hidden id="enable-spatial" type="checkbox" checked>
 			<label class="toggle-btn" for="enable-spatial">Spatial</label>
-			
 			<input class="toggle-trigger" hidden id="enable-word" type="checkbox" checked>
 			<label class="toggle-btn" for="enable-word">Word</label>
 			<input class="toggle-trigger" hidden id="enable-shape" type="checkbox" checked>
@@ -47,6 +167,9 @@
 			<input class="toggle-trigger" hidden id="enable-color" type="checkbox" checked>
 			<label class="toggle-btn" for="enable-color">Color</label>
 		  </div>
+		</div>
+		<div class="setting">
+			<button id="open-stats" class="setting-btn">Open Statistics</button>
 		</div>
 		<div class="setting">
 			<label>N Back Level</label>
