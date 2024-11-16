@@ -249,46 +249,24 @@ function baseDelayInputHandler(evt, defVal) {
     baseDelayInput.value = defVal;
     baseDelay = defVal;
   } else {
-    baseDelay = Math.min(Math.max(+baseDelayInput.value, minDelay), maxDelay);
+    baseDelay = Math.min(Math.max(+baseDelayInput.value, 2000), 20000);
     saveSettings();
   }
 
-  if (+baseDelayInput.value < minDelay || +baseDelayInput.value > maxDelay) {
+  if (+baseDelayInput.value < 2000 || +baseDelayInput.value > 20000) {
     baseDelayInput.style.borderColor = "#f00";
   } else {
     baseDelayInput.style.borderColor = "#fff";
   }
 }
 
-function minDelayInputHandler(evt, defVal) {
+function maxAllowedMistakesInputHandler(evt, defVal) {
   if (defVal != null) {
-    minDelayInput.value = defVal;
-    minDelay = defVal;
+    maxAllowedMistakesInput.value = defVal;
+    maxAllowedMistakes = defVal;
   } else {
-    minDelay = Math.min(+minDelayInput.value, baseDelay);
+    maxAllowedMistakes = +maxAllowedMistakesInput.value;
     saveSettings();
-  }
-
-  if (+minDelayInput.value > baseDelay) {
-    minDelayInput.style.borderColor = "#f00";
-  } else {
-    minDelayInput.style.borderColor = "#fff";
-  }
-}
-
-function maxDelayInputHandler(evt, defVal) {
-  if (defVal != null) {
-    maxDelayInput.value = defVal;
-    maxDelay = defVal;
-  } else {
-    maxDelay = Math.max(+maxDelayInput.value, baseDelay);
-    saveSettings();
-  }
-
-  if (+maxDelayInput.value < baseDelay) {
-    maxDelayInput.style.borderColor = "#f00";
-  } else {
-    maxDelayInput.style.borderColor = "#fff";
   }
 }
 
@@ -382,7 +360,7 @@ function resetSettings() {
   if (!confirmed) {
     return;
   }
-  
+
   wallsEnabled = defVal_wallsEnabled;
   cameraEnabled = defVal_cameraEnabled;
   faceEnabled = defVal_faceEnabled;
@@ -399,10 +377,8 @@ function resetSettings() {
   zoom = defVal_zoom;
   perspective = defVal_perspective;
   targetNumOfStimuli = defVal_targetNumOfStimuli;
-  gameStartDelay = defVal_gameStartDelay;
   baseDelay = defVal_baseDelay;
-  minDelay = defVal_minDelay;
-  maxDelay = defVal_maxDelay;
+  maxAllowedMistakes = defVal_maxAllowedMistakes;
   prevLevelThreshold = defVal_prevLevelThreshold;
   nextLevelThreshold = defVal_nextLevelThreshold;
 
@@ -428,8 +404,7 @@ function saveSettings() {
     perspective,
     targetNumOfStimuli,
     baseDelay,
-    minDelay,
-    maxDelay,
+    maxAllowedMistakes,
     prevLevelThreshold,
     nextLevelThreshold
   });
@@ -455,8 +430,7 @@ function loadSettings() {
     perspectiveInputHandler(null, settings.perspective);
     targetStimuliInputHandler(null, settings.targetNumOfStimuli);
     baseDelayInputHandler(null, settings.baseDelay);
-    minDelayInputHandler(null, settings.minDelay);
-    maxDelayInputHandler(null, settings.maxDelay);
+    maxAllowedMistakesInputHandler(null, settings.maxAllowedMistakes);
     previousLevelThresholdInputHandler(null, settings.prevLevelThreshold);
     nextLevelThresholdInputHandler(null, settings.nextLevelThreshold);
   }
@@ -766,50 +740,50 @@ function getGameCycle(n) {
       if (colorEnabled) {
         mistakes += wrongColor;
       };
-      let errorThresholdUpper = 1; // old one: matchingStimuli * 0.4;
-      let errorThresholdLower = 3;
       
-      // Delay calculation, adapting to the user skill level
-      let missed = matchingStimuli - correctStimuli;
-      let deltaDelay = missed * 200 + mistakes * 200 - correctStimuli * 100;
-      let newBaseDelay = Math.min(Math.max(baseDelay + deltaDelay, minDelay), maxDelay);
-      let hasDelayChanged = newBaseDelay !== +baseDelay; // I don't remember if baseDelay is a number or a string so I cast with +
-      baseDelay = newBaseDelay;
-      baseDelayInput.value = newBaseDelay;
+      const missed = matchingStimuli - correctStimuli;
       
-      console.log("Matching", matchingStimuli);
-      console.log("Correct", correctStimuli);
-      console.log("Missed", missed);
-      console.log("Mistaken", mistakes);
+      console.log("matchingStimuli", matchingStimuli);
+      console.log("correctStimuli", correctStimuli);
+      console.log("missed", missed);
+      console.log("mistakes", mistakes);
       
       stop(); // This resets stuff (matchingStimuli etc...)
+
+      const lines = {
+        correctPercentage: `You've got ${Math.floor(percentage * 100)} percent of correct stimuli.`,
+        numOfErrors: `With ${(mistakes < 1) ? "no" : mistakes} mistake${(mistakes > 1) ? "s" : ""}.`,
+        levelUp: "Advancing to the next level.",
+        levelDown: "Going back to the previous level.",
+        levelSame: "Level remains the same.",
+      };
+
+      const levelUpCond = (percentage >= nextLevelThreshold) && (mistakes <= maxAllowedMistakes) && nLevel < 9;
+      const levelDownCond = ((percentage < prevLevelThreshold) || (mistakes > maxAllowedMistakes)) && nLevel > 1;
       
-      speak(`You've got ${Math.floor(percentage * 100)} percent of correct stimuli. With ${mistakes} mistake${(mistakes > 1) ? "s" : ""}.`)
+      recapDialogContent.parentElement.show();
+      recapDialogContent.innerHTML = lines.correctPercentage + "<br><br>";
+      recapDialogContent.innerHTML += lines.numOfErrors + "<br><br>";
+      if (levelUpCond) {
+        nLevelInputHandler(null, nLevel + 1);
+        recapDialogContent.innerHTML += lines.levelUp + "<br><br>";
+      } else if (levelDownCond) {
+        nLevelInputHandler(null, nLevel - 1);
+        recapDialogContent.innerHTML += lines.levelDown + "<br><br>";
+      } else {
+        recapDialogContent.innerHTML += lines.levelSame + "<br><br>";
+      }
+
+      speak(lines.correctPercentage)
         .onend = function () {
-          if (
-            percentage >= nextLevelThreshold
-            && mistakes <= errorThresholdUpper
-            && +nLevel.value < 9
-          ) {
-            speak("Congratulations! Advancing to the next level.");
-            nLevel.value = +nLevel.value + 1;
-          } else if (
-            (percentage <= prevLevelThreshold || mistakes > errorThresholdLower)
-            && +nLevel.value > 1
-          ) {
-            speak("Going back to the previous level.");
-            nLevel.value = +nLevel.value - 1;
+          speak(lines.numOfErrors);
+
+          if (levelUpCond) {
+            speak(lines.levelUp);
+          } else if (levelDownCond) {
+            speak(lines.levelDown);
           } else {
-            speak("Level remains the same.");
-          }
-        
-          // Delay changes
-          if (!hasDelayChanged) {
-            speak("Delay between stimuli, stays the same."); 
-          } else if (deltaDelay > 0) {
-            speak(`Delay between stimuli, increased to ${baseDelay / 1000} seconds`);
-          } else {
-            speak(`Delay between stimuli, decreased to ${baseDelay / 1000} seconds`); 
+            speak(lines.levelSame);
           }
         };
       
@@ -887,15 +861,9 @@ function play() {
   speak("Start.");
   document.querySelector(".stop").classList.remove("active");
   document.querySelector(".play").classList.add("active");
-  
-  let n = +nLevel.value;
-  let gameCycle = getGameCycle(n);
-  setTimeout(gameCycle, gameStartDelay);
+
   intervals.push(
-    setInterval(
-      gameCycle,
-      gameStartDelay + baseDelay
-    )
+    setInterval(getGameCycle(nLevel), baseDelay)
   );
 }
 
@@ -1063,6 +1031,7 @@ const checkSoundBtn = document.querySelector(".check-sound");
 const checkColorBtn = document.querySelector(".check-color");
 
 const nBackDisplay = document.querySelector("#n-back-display");
+const recapDialogContent = document.querySelector("#recap-dialog .dialog-content");
 
 const nLevelInput = document.querySelector("#n-level");
 const sceneDimmerInput = document.querySelector("#scene-dimmer");
@@ -1072,9 +1041,8 @@ const perspectiveInput = document.querySelector("#perspective");
 const targetStimuliInput = document.querySelector("#targetStimuli");
 
 const baseDelayInput = document.querySelector("#baseDelay");
-const minDelayInput = document.querySelector("#minDelay");
-const maxDelayInput = document.querySelector("#maxDelay");
 
+const maxAllowedMistakesInput = document.querySelector("#maxAllowedMistakes");
 const previousLevelThresholdInput = document.querySelector("#previousLevelThreshold");
 const nextLevelThresholdInput = document.querySelector("#nextLevelThreshold");
 
@@ -1170,12 +1138,10 @@ const defVal_sceneDimmer = 0.5;
 const defVal_zoom = 0.7;
 const defVal_perspective = 15;
 const defVal_targetNumOfStimuli = 5;
-const defVal_gameStartDelay = 3000;
 const defVal_baseDelay = 5000;
-const defVal_minDelay = 2000;
-const defVal_maxDelay = 10000;
+const defVal_maxAllowedMistakes = 3;
 const defVal_prevLevelThreshold = 0.5;
-const defVal_nextLevelThreshold = 0.9;
+const defVal_nextLevelThreshold = 0.8;
 
 // Editable settings
 let wallsEnabled = defVal_wallsEnabled;
@@ -1194,10 +1160,8 @@ let sceneDimmer = defVal_sceneDimmer;
 let zoom = defVal_zoom;
 let perspective = defVal_perspective;
 let targetNumOfStimuli = defVal_targetNumOfStimuli;
-let gameStartDelay = defVal_gameStartDelay;
 let baseDelay = defVal_baseDelay;
-let minDelay = defVal_minDelay;
-let maxDelay = defVal_maxDelay;
+let maxAllowedMistakes = defVal_maxAllowedMistakes;
 let prevLevelThreshold = defVal_prevLevelThreshold;
 let nextLevelThreshold = defVal_nextLevelThreshold;
 
@@ -1298,16 +1262,13 @@ targetStimuliInput.addEventListener("input", targetStimuliInputHandler);
 baseDelayInputHandler(null, baseDelay);
 baseDelayInput.addEventListener("input", baseDelayInputHandler);
 
-minDelayInputHandler(null, minDelay);
-minDelayInput.addEventListener("input", minDelayInputHandler);
+maxAllowedMistakesInputHandler(null, maxAllowedMistakes);
+maxAllowedMistakesInput.addEventListener("input", maxAllowedMistakesInputHandler);
 
-maxDelayInputHandler(null, maxDelay);
-maxDelayInput.addEventListener("input", maxDelayInputHandler);
-
-previousLevelThresholdInputHandler(null, prevLevelThreshold * 100);
+previousLevelThresholdInputHandler(null, prevLevelThreshold);
 previousLevelThresholdInput.addEventListener("input", previousLevelThresholdInputHandler);
 
-nextLevelThresholdInputHandler(null, nextLevelThreshold * 100);
+nextLevelThresholdInputHandler(null, nextLevelThreshold);
 nextLevelThresholdInput.addEventListener("input", nextLevelThresholdInputHandler);
 
 resetSettingsButton.addEventListener("click", resetSettings);
