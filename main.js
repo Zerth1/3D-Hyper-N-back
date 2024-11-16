@@ -1,3 +1,7 @@
+/**
+ * TODO: Custom key binding
+ */
+
 let history = {
   1: {},
   2: {},
