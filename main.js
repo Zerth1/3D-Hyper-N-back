@@ -496,7 +496,7 @@ function getBar(n) {
 
 function openStats(_dim) {
   statsDialogContent.parentElement.show();
-  const dim = _dim || localStorage.getItem("last-n") || 1;
+  const dim = _dim || localStorage.getItem("last-dim") || 1;
   const radios = [ ...document.querySelectorAll("input[name='dimension']") ];
   radios[dim - 1].checked = true;
   const _history = history[dim];
@@ -871,7 +871,7 @@ function getGameCycle(n) {
       const levelUpCond = (percentage >= nextLevelThreshold) && (mistakes <= maxAllowedMistakes) && nLevel < 9;
       const levelDownCond = ((percentage < prevLevelThreshold) || (mistakes > maxAllowedMistakes)) && nLevel > 1;
 
-      localStorage.setItem("last-n", nLevel);
+      localStorage.setItem("last-dim", dimensions);
       const historyPoint = {
         nLevel,
         right: correctStimuli,
