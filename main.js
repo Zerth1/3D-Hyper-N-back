@@ -1,263 +1,8 @@
-const LS_SETTINGS_KEY = "hyper-n-back";
-
-/**
- * TODO:
- * 1. Have defaults for settings somewhere and make a procedure to reset them;
- * 2. Save N into settings and add control for that in the left panel too
- * 3. Fix level-up and down
- * 4. Create a modal class and use it for end-of-game summary
- * 5. Save N values and place statistics somewhere
- */
-
-// DOM elements
-let sceneWrapper = document.querySelector(".scene-wrapper");
-let scene = document.querySelector(".scene");
-
-let floors = [...document.querySelectorAll(".floor")];
-let wallColors = [...document.querySelectorAll('[class^="wall"][class$="color"]')];
-let wallWords = [...document.querySelectorAll('[class^="wall"][class$="word"]')];
-
-let cube = document.querySelector(".cube");
-let faceEls = [...document.querySelectorAll(".cube > .face")];
-
-let innerCube = document.querySelector(".inner-cube");
-let innerFaceEls = [...document.querySelectorAll(".inner-cube > .face")];
-let shape = document.querySelector(".shape");
-
-let checkWallsBtn = document.querySelector(".check-walls");
-let checkCameraBtn = document.querySelector(".check-camera");
-let checkFaceBtn = document.querySelector(".check-face");
-let checkPositionBtn = document.querySelector(".check-position");
-
-let checkWordBtn = document.querySelector(".check-word");
-let checkShapeBtn = document.querySelector(".check-shape");
-let checkCornerBtn = document.querySelector(".check-corner");
-let checkSoundBtn = document.querySelector(".check-sound");
-let checkColorBtn = document.querySelector(".check-color");
-
-let nBackInput = document.querySelector("#n-back");
-
-let sceneDimmerInput = document.querySelector("#scene-dimmer");
-let zoomInput = document.querySelector("#zoom");
-let perspectiveInput = document.querySelector("#perspective");
-
-let targetStimuliInput = document.querySelector("#targetStimuli");
-
-let baseDelayInput = document.querySelector("#baseDelay");
-let minDelayInput = document.querySelector("#minDelay");
-let maxDelayInput = document.querySelector("#maxDelay");
-
-let previousLevelThresholdInput = document.querySelector("#previousLevelThreshold");
-let nextLevelThresholdInput = document.querySelector("#nextLevelThreshold");
-
-let [
-  wallsEnableTrig,
-  cameraEnableTrig,
-  faceEnableTrig,
-  positionEnableTrig,
-  wordEnableTrig,
-  shapeEnableTrig,
-  cornerEnableTrig,
-  soundEnableTrig,
-  colorEnableTrig
-] = [...document.querySelectorAll(".toggle-trigger")];
-
-// Game settings
-let wallColorsList = [
-  "#00b894",
-  "#0984e3",
-  "#6c5ce7",
-  "#fecb22",
-  "#d63031",
-  "#a92276"
-];
-let points = [
-  "-60&0", "-60&-45", "-60&-90",
-  "-20&0", "-20&-45", "-20&-90"
-];
-let numbers = "123456";
-let initialCubePosition = "-.5em, -3em, .5em";
-let moves = [
-  "-3.5em, 0, -2.5em", "-.5em, 0, -2.5em", "2.5em, 0, -2.5em",
-  "-3.5em, 0, .5em", "-.5em, 0, .5em", "2.5em, 0, .5em",
-  "-3.5em, 0, 3.5em", "-.5em, 0, 3.5em", "2.5em, 0, 3.5em",
-  
-  "-3.5em, -3em, -2.5em", "-.5em, -3em, -2.5em", "2.5em, -3em, -2.5em",
-  "-3.5em, -3em, .5em", "2.5em, -3em, .5em",
-  "-3.5em, -3em, 3.5em", "-.5em, -3em, 3.5em", "2.5em, -3em, 3.5em",
-  
-  "-3.5em, -6em, -2.5em", "-.5em, -6em, -2.5em", "2.5em, -6em, -2.5em",
-  "-3.5em, -6em, .5em", "-.5em, -6em, .5em", "2.5em, -6em, .5em",
-  "-3.5em, -6em, 3.5em", "-.5em, -6em, 3.5em", "2.5em, -6em, 3.5em"
-];
-
-let wordsList = [
-  "forest",
-  "desert",
-  "island",
-  "jungle",
-  "road",
-  "city",
-  "river",
-  "park",
-  "sea",
-  "fog",
-  "rain",
-  "snow"
-];
-let shapeClasses = ["triangle", "square", "circle"];
-let initialInnerCubePosition = ".5em, .5em, 0";
-let cornersList = [
-  "2px, 2px, calc(.5em - 2px)",
-  "2px, 2px, calc(-.5em + 2px)",
-  "calc(1em - 2px), 2px, calc(-.5em + 2px)",
-  "calc(1em - 2px), 2px, calc(.5em - 2px)",
-  
-  "0, calc(1em - 2px), calc(.5em - 2px)",
-  "0, calc(1em - 2px), calc(-.5em + 2px)",
-  "calc(1em - 2px), calc(1em - 2px), calc(-.5em + 2px)",
-  "calc(1em - 2px), calc(1em - 2px), calc(.5em - 2px)"
-];
-let letters = "abflqy";
-let colorClasses = [
-  "col-a", "col-b", "col-c", "col-d", "col-e", "col-f"
-];
-
-// Editable settings
-let wallsEnabled = true;
-let cameraEnabled = true;
-let faceEnabled = true;
-let positionEnabled = true;
-let wordEnabled = true;
-let shapeEnabled = true;
-let cornerEnabled = true;
-let soundEnabled = true;
-let colorEnabled = true;
-let tileAHexColor = "#111";
-let tileBHexColor = "#888";
-let sceneDimmer = 0.5;
-let zoom = 0.7;
-let perspective = 15;
-let targetNumOfStimuli = 5;
-let gameStartDelay = 3000;
-let baseDelay = 5000;
-let minDelay = 2000;
-let maxDelay = 10000;
-let prevLevelThreshold = 0.5;
-let nextLevelThreshold = 0.9;
-
-// Game states
-let matchingStimuli = 0;
-let stimuliCount = 0;
-let intervals = [];
-
-let isRunning = false;
-
-let enableWallsCheck = true;
-let enableCameraCheck = true;
-let enableFaceCheck = true;
-let enablePositionCheck = true;
-
-let enableWordCheck = true;
-let enableShapeCheck = true;
-let enableCornerCheck = true;
-let enableSoundCheck = true;
-let enableColorCheck = true;
-
-let currWalls;
-let currCamera;
-let currFace;
-let currPosition;
-
-let currWord;
-let currShape;
-let currCorner;
-let currSound;
-let currColor;
-
-let rightWalls = 0;
-let rightCamera = 0;
-let rightFace = 0;
-let rightPosition = 0;
-
-let rightWord = 0;
-let rightShape = 0;
-let rightCorner = 0;
-let rightSound = 0;
-let rightColor = 0;
-
-let wrongWalls = 0;
-let wrongCamera = 0;
-let wrongFace = 0;
-let wrongPosition = 0;
-
-let wrongWord = 0;
-let wrongShape = 0;
-let wrongCorner = 0;
-let wrongSound = 0;
-let wrongColor = 0;
-
-// Events
-wallsEnableTrigHandler(null, wallsEnabled);
-wallsEnableTrig.addEventListener("input", wallsEnableTrigHandler);
-
-cameraEnableTrigHandler(null, cameraEnabled);
-cameraEnableTrig.addEventListener("input", cameraEnableTrigHandler);
-
-faceEnableTrigHandler(null, faceEnabled);
-faceEnableTrig.addEventListener("input", faceEnableTrigHandler);
-
-positionEnableTrigHandler(null, positionEnabled);
-positionEnableTrig.addEventListener("input", positionEnableTrigHandler);
-
-wordEnableTrigHandler(null, wordEnabled);
-wordEnableTrig.addEventListener("input", wordEnableTrigHandler);
-
-shapeEnableTrigHandler(null, shapeEnabled);
-shapeEnableTrig.addEventListener("input", shapeEnableTrigHandler);
-
-cornerEnableTrigHandler(null, cornerEnabled);
-cornerEnableTrig.addEventListener("input", cornerEnableTrigHandler);
-
-soundEnableTrigHandler(null, faceEnabled);
-soundEnableTrig.addEventListener("input", soundEnableTrigHandler);
-
-colorEnableTrigHandler(null, colorEnabled);
-colorEnableTrig.addEventListener("input", colorEnableTrigHandler);
-
-sceneDimmerInputHandler(null, sceneDimmer);
-sceneDimmerInput.addEventListener("input", sceneDimmerInputHandler);
-
-zoomInputHandler(null, zoom);
-zoomInput.addEventListener("input", zoomInputHandler);
-
-perspectiveInputHandler(null, perspective);
-perspectiveInput.addEventListener("input", perspectiveInputHandler);
-
-targetStimuliInputHandler(null, targetNumOfStimuli);
-targetStimuliInput.addEventListener("input", targetStimuliInputHandler);
-
-baseDelayInputHandler(null, baseDelay);
-baseDelayInput.addEventListener("input", baseDelayInputHandler);
-
-minDelayInputHandler(null, minDelay);
-minDelayInput.addEventListener("input", minDelayInputHandler);
-
-maxDelayInputHandler(null, maxDelay);
-maxDelayInput.addEventListener("input", maxDelayInputHandler);
-
-previousLevelThresholdInputHandler(null, prevLevelThreshold * 100);
-previousLevelThresholdInput.addEventListener("input", previousLevelThresholdInputHandler);
-
-nextLevelThresholdInputHandler(null, nextLevelThreshold * 100);
-nextLevelThresholdInput.addEventListener("input", nextLevelThresholdInputHandler);
-
-loadSettings();
-
 // Functions
 function wallsEnableTrigHandler(evt, defVal) {
   if (defVal != null) {
     wallsEnableTrig.checked = defVal;
+    wallsEnabled = defVal;
   } else {
     wallsEnabled = !wallsEnabled;
     saveSettings();
@@ -275,6 +20,7 @@ function wallsEnableTrigHandler(evt, defVal) {
 function cameraEnableTrigHandler(evt, defVal) {
   if (defVal != null) {
     cameraEnableTrig.checked = defVal;
+    cameraEnabled = defVal;
   } else {
     cameraEnabled = !cameraEnabled;
     saveSettings();
@@ -292,6 +38,7 @@ function cameraEnableTrigHandler(evt, defVal) {
 function faceEnableTrigHandler(evt, defVal) {
   if (defVal != null) {
     faceEnableTrig.checked = defVal;
+    faceEnabled = defVal;
   } else {
     faceEnabled = !faceEnabled;
     saveSettings();
@@ -309,6 +56,7 @@ function faceEnableTrigHandler(evt, defVal) {
 function positionEnableTrigHandler(evt, defVal) {
   if (defVal != null) {
     positionEnableTrig.checked = defVal;
+    positionEnabled = defVal;
   } else {
     positionEnabled = !positionEnabled;
     saveSettings();
@@ -326,6 +74,7 @@ function positionEnableTrigHandler(evt, defVal) {
 function wordEnableTrigHandler(evt, defVal) {
   if (defVal != null) {
     wordEnableTrig.checked = defVal;
+    wordEnabled = defVal;
   } else {
     wordEnabled = !wordEnabled;
     saveSettings();
@@ -343,6 +92,7 @@ function wordEnableTrigHandler(evt, defVal) {
 function shapeEnableTrigHandler(evt, defVal) {
   if (defVal != null) {
     shapeEnableTrig.checked = defVal;
+    shapeEnabled = defVal;
   } else {
     shapeEnabled = !shapeEnabled;
     saveSettings();
@@ -360,6 +110,7 @@ function shapeEnableTrigHandler(evt, defVal) {
 function cornerEnableTrigHandler(evt, defVal) {
   if (defVal != null) {
     cornerEnableTrig.checked = defVal;
+    cornerEnabled = defVal;
   } else {
     cornerEnabled = !cornerEnabled;
     saveSettings();
@@ -392,6 +143,7 @@ function cornerEnableTrigHandler(evt, defVal) {
 function soundEnableTrigHandler(evt, defVal) {
   if (defVal != null) {
     soundEnableTrig.checked = defVal;
+    soundEnabled = defVal;
   } else {
     soundEnabled = !soundEnabled;
     saveSettings();
@@ -409,6 +161,7 @@ function soundEnableTrigHandler(evt, defVal) {
 function colorEnableTrigHandler(evt, defVal) {
   if (defVal != null) {
     colorEnableTrig.checked = defVal;
+    colorEnabled = defVal;
   } else {
     colorEnabled = !colorEnabled;
     saveSettings();
@@ -423,9 +176,27 @@ function colorEnableTrigHandler(evt, defVal) {
   checkColorBtn.style.animationDelay = "0s"
 }
 
+function nLevelInputHandler(evt, defVal) {
+  if (defVal != null) {
+    nLevelInput.value = defVal;
+    nLevel = defVal;
+  } else {
+    nLevel = Math.min(Math.max(+nLevelInput.value, 1), 9);
+    saveSettings();
+  }
+
+  if (+nLevelInput.value < 1 || +nLevelInput.value > 9) {
+    nLevelInput.style.borderColor = "#f00";
+  } else {
+    nLevelInput.style.borderColor = "#fff";
+    nBackDisplay.innerHTML = nLevel;
+  }
+}
+
 function sceneDimmerInputHandler(evt, defVal) {
   if (defVal) {
     sceneDimmerInput.value = defVal;
+    sceneDimmer = defVal;
   } else {
     sceneDimmer = +sceneDimmerInput.value;
     saveSettings();
@@ -444,6 +215,7 @@ function sceneDimmerInputHandler(evt, defVal) {
 function zoomInputHandler(evt, defVal) {
   if (defVal) {
     zoomInput.value = defVal;
+    zoom = defVal;
   } else {
     zoom = +zoomInput.value;
     saveSettings();
@@ -454,6 +226,7 @@ function zoomInputHandler(evt, defVal) {
 function perspectiveInputHandler(evt, defVal) {
   if (defVal) {
     perspectiveInput.value = defVal;
+    perspective = defVal;
   } else {
     perspective = +perspectiveInput.value;
     saveSettings();
@@ -464,6 +237,7 @@ function perspectiveInputHandler(evt, defVal) {
 function targetStimuliInputHandler(evt, defVal) {
   if (defVal) {
     targetStimuliInput.value = defVal;
+    targetNumOfStimuli = defVal;
   } else {
     targetNumOfStimuli = +targetStimuliInput.value;
     saveSettings();  
@@ -473,6 +247,7 @@ function targetStimuliInputHandler(evt, defVal) {
 function baseDelayInputHandler(evt, defVal) {
   if (defVal != null) {
     baseDelayInput.value = defVal;
+    baseDelay = defVal;
   } else {
     baseDelay = Math.min(Math.max(+baseDelayInput.value, minDelay), maxDelay);
     saveSettings();
@@ -488,6 +263,7 @@ function baseDelayInputHandler(evt, defVal) {
 function minDelayInputHandler(evt, defVal) {
   if (defVal != null) {
     minDelayInput.value = defVal;
+    minDelay = defVal;
   } else {
     minDelay = Math.min(+minDelayInput.value, baseDelay);
     saveSettings();
@@ -503,6 +279,7 @@ function minDelayInputHandler(evt, defVal) {
 function maxDelayInputHandler(evt, defVal) {
   if (defVal != null) {
     maxDelayInput.value = defVal;
+    maxDelay = defVal;
   } else {
     maxDelay = Math.max(+maxDelayInput.value, baseDelay);
     saveSettings();
@@ -518,6 +295,7 @@ function maxDelayInputHandler(evt, defVal) {
 function previousLevelThresholdInputHandler(evt, defVal) {
   if (defVal != null) {
     previousLevelThresholdInput.value = defVal * 100;
+    prevLevelThreshold = defVal;
   } else {
     prevLevelThreshold = +previousLevelThresholdInput.value / 100;
     saveSettings();
@@ -527,6 +305,7 @@ function previousLevelThresholdInputHandler(evt, defVal) {
 function nextLevelThresholdInputHandler(evt, defVal) {
   if (defVal != null) {
     nextLevelThresholdInput.value = defVal * 100;
+    nextLevelThreshold = defVal;
   } else {
     nextLevelThreshold = +nextLevelThresholdInput.value / 100;  
     saveSettings();
@@ -598,6 +377,31 @@ repeating-conic-gradient(
   }
 }
 
+function resetSettings() {
+  wallsEnabled = defVal_wallsEnabled;
+  cameraEnabled = defVal_cameraEnabled;
+  faceEnabled = defVal_faceEnabled;
+  positionEnabled = defVal_positionEnabled;
+  wordEnabled = defVal_wordEnabled;
+  shapeEnabled = defVal_shapeEnabled;
+  cornerEnabled = defVal_cornerEnabled;
+  soundEnabled = defVal_soundEnabled;
+  colorEnabled = defVal_colorEnabled;
+  tileAHexColor = defVal_tileAHexColor;
+  tileBHexColor = defVal_tileBHexColor;
+  nLevel = defVal_nLevel;
+  sceneDimmer = defVal_sceneDimmer;
+  zoom = defVal_zoom;
+  perspective = defVal_perspective;
+  targetNumOfStimuli = defVal_targetNumOfStimuli;
+  gameStartDelay = defVal_gameStartDelay;
+  baseDelay = defVal_baseDelay;
+  minDelay = defVal_minDelay;
+  maxDelay = defVal_maxDelay;
+  prevLevelThreshold = defVal_prevLevelThreshold;
+  nextLevelThreshold = defVal_nextLevelThreshold;
+};
+
 function saveSettings() {
   const stringifiedSettings = JSON.stringify({
     wallsEnabled,
@@ -610,6 +414,7 @@ function saveSettings() {
     soundEnabled,
     colorEnabled,
     //
+    nLevel,
     sceneDimmer,
     zoom,
     perspective,
@@ -626,43 +431,26 @@ function saveSettings() {
 function loadSettings() {
   const settings = JSON.parse(localStorage.getItem(LS_SETTINGS_KEY));
   if (settings) {
-    wallsEnabled = settings.wallsEnabled;
-    wallsEnableTrigHandler(null, wallsEnabled);
-    cameraEnabled = settings.cameraEnabled;
-    cameraEnableTrigHandler(null, cameraEnabled);
-    faceEnabled = settings.faceEnabled;
-    faceEnableTrigHandler(null, faceEnabled);
-    positionEnabled = settings.positionEnabled;
-    positionEnableTrigHandler(null, positionEnabled);
-    wordEnabled = settings.wordEnabled;
-    wordEnableTrigHandler(null, wordEnabled);
-    shapeEnabled = settings.shapeEnabled;
-    shapeEnableTrigHandler(null, shapeEnabled);
-    cornerEnabled = settings.cornerEnabled;
-    cornerEnableTrigHandler(null, cornerEnabled);
-    soundEnabled = settings.soundEnabled;
-    soundEnableTrigHandler(null, soundEnabled);
-    colorEnabled = settings.colorEnabled;
-    colorEnableTrigHandler(null, colorEnabled);
+    wallsEnableTrigHandler(null, settings.wallsEnabled);
+    cameraEnableTrigHandler(null, settings.cameraEnabled);
+    faceEnableTrigHandler(null, settings.faceEnabled);
+    positionEnableTrigHandler(null, settings.positionEnabled);
+    wordEnableTrigHandler(null, settings.wordEnabled);
+    shapeEnableTrigHandler(null, settings.shapeEnabled);
+    cornerEnableTrigHandler(null, settings.cornerEnabled);
+    soundEnableTrigHandler(null, settings.soundEnabled);
+    colorEnableTrigHandler(null, settings.colorEnabled);
     //
-    sceneDimmer = settings.sceneDimmer;
-    sceneDimmerInputHandler(null, sceneDimmer);
-    zoom = settings.zoom;
-    zoomInputHandler(null, zoom);
-    perspective = settings.perspective;
-    perspectiveInputHandler(null, perspective);
-    targetNumOfStimuli = settings.targetNumOfStimuli;
-    targetStimuliInputHandler(null, targetNumOfStimuli);
-    baseDelay = settings.baseDelay;
-    baseDelayInputHandler(null, baseDelay);
-    minDelay = settings.minDelay;
-    minDelayInputHandler(null, minDelay);
-    maxDelay = settings.maxDelay;
-    maxDelayInputHandler(null, maxDelay);
-    prevLevelThreshold = settings.prevLevelThreshold;
-    previousLevelThresholdInputHandler(null, prevLevelThreshold);
-    nextLevelThreshold = settings.nextLevelThreshold;
-    nextLevelThresholdInputHandler(null, nextLevelThreshold);
+    nLevelInputHandler(null, settings.nLevel);
+    sceneDimmerInputHandler(null, settings.sceneDimmer);
+    zoomInputHandler(null, settings.zoom);
+    perspectiveInputHandler(null, settings.perspective);
+    targetStimuliInputHandler(null, settings.targetNumOfStimuli);
+    baseDelayInputHandler(null, settings.baseDelay);
+    minDelayInputHandler(null, settings.minDelay);
+    maxDelayInputHandler(null, settings.maxDelay);
+    previousLevelThresholdInputHandler(null, settings.prevLevelThreshold);
+    nextLevelThresholdInputHandler(null, settings.nextLevelThreshold);
   }
 }
 
@@ -993,16 +781,16 @@ function getGameCycle(n) {
           if (
             percentage >= nextLevelThreshold
             && mistakes <= errorThresholdUpper
-            && +nBackInput.value < 9
+            && +nLevel.value < 9
           ) {
             speak("Congratulations! Advancing to the next level.");
-            nBackInput.value = +nBackInput.value + 1;
+            nLevel.value = +nLevel.value + 1;
           } else if (
             (percentage <= prevLevelThreshold || mistakes > errorThresholdLower)
-            && +nBackInput.value > 1
+            && +nLevel.value > 1
           ) {
             speak("Going back to the previous level.");
-            nBackInput.value = +nBackInput.value - 1;
+            nLevel.value = +nLevel.value - 1;
           } else {
             speak("Level remains the same.");
           }
@@ -1092,7 +880,7 @@ function play() {
   document.querySelector(".stop").classList.remove("active");
   document.querySelector(".play").classList.add("active");
   
-  let n = +nBackInput.value;
+  let n = +nLevel.value;
   let gameCycle = getGameCycle(n);
   setTimeout(gameCycle, gameStartDelay);
   intervals.push(
@@ -1238,6 +1026,281 @@ function checkHandler(sense) {
   }
 }
 
+const LS_SETTINGS_KEY = "hyper-n-back";
+
+// DOM elements
+const sceneWrapper = document.querySelector(".scene-wrapper");
+const scene = document.querySelector(".scene");
+
+const floors = [...document.querySelectorAll(".floor")];
+const wallColors = [...document.querySelectorAll('[class^="wall"][class$="color"]')];
+const wallWords = [...document.querySelectorAll('[class^="wall"][class$="word"]')];
+
+const cube = document.querySelector(".cube");
+const faceEls = [...document.querySelectorAll(".cube > .face")];
+
+const innerCube = document.querySelector(".inner-cube");
+const innerFaceEls = [...document.querySelectorAll(".inner-cube > .face")];
+const shape = document.querySelector(".shape");
+
+const checkWallsBtn = document.querySelector(".check-walls");
+const checkCameraBtn = document.querySelector(".check-camera");
+const checkFaceBtn = document.querySelector(".check-face");
+const checkPositionBtn = document.querySelector(".check-position");
+
+const checkWordBtn = document.querySelector(".check-word");
+const checkShapeBtn = document.querySelector(".check-shape");
+const checkCornerBtn = document.querySelector(".check-corner");
+const checkSoundBtn = document.querySelector(".check-sound");
+const checkColorBtn = document.querySelector(".check-color");
+
+const nBackDisplay = document.querySelector("#n-back-display");
+
+const nLevelInput = document.querySelector("#n-level");
+const sceneDimmerInput = document.querySelector("#scene-dimmer");
+const zoomInput = document.querySelector("#zoom");
+const perspectiveInput = document.querySelector("#perspective");
+
+const targetStimuliInput = document.querySelector("#targetStimuli");
+
+const baseDelayInput = document.querySelector("#baseDelay");
+const minDelayInput = document.querySelector("#minDelay");
+const maxDelayInput = document.querySelector("#maxDelay");
+
+const previousLevelThresholdInput = document.querySelector("#previousLevelThreshold");
+const nextLevelThresholdInput = document.querySelector("#nextLevelThreshold");
+
+const [
+  wallsEnableTrig,
+  cameraEnableTrig,
+  faceEnableTrig,
+  positionEnableTrig,
+  wordEnableTrig,
+  shapeEnableTrig,
+  cornerEnableTrig,
+  soundEnableTrig,
+  colorEnableTrig
+] = [...document.querySelectorAll(".toggle-trigger")];
+
+// Game settings
+const wallColorsList = [
+  "#00b894",
+  "#0984e3",
+  "#6c5ce7",
+  "#fecb22",
+  "#d63031",
+  "#a92276"
+];
+const points = [
+  "-60&0", "-60&-45", "-60&-90",
+  "-20&0", "-20&-45", "-20&-90"
+];
+const numbers = "123456";
+const initialCubePosition = "-.5em, -3em, .5em";
+const moves = [
+  "-3.5em, 0, -2.5em", "-.5em, 0, -2.5em", "2.5em, 0, -2.5em",
+  "-3.5em, 0, .5em", "-.5em, 0, .5em", "2.5em, 0, .5em",
+  "-3.5em, 0, 3.5em", "-.5em, 0, 3.5em", "2.5em, 0, 3.5em",
+  
+  "-3.5em, -3em, -2.5em", "-.5em, -3em, -2.5em", "2.5em, -3em, -2.5em",
+  "-3.5em, -3em, .5em", "2.5em, -3em, .5em",
+  "-3.5em, -3em, 3.5em", "-.5em, -3em, 3.5em", "2.5em, -3em, 3.5em",
+  
+  "-3.5em, -6em, -2.5em", "-.5em, -6em, -2.5em", "2.5em, -6em, -2.5em",
+  "-3.5em, -6em, .5em", "-.5em, -6em, .5em", "2.5em, -6em, .5em",
+  "-3.5em, -6em, 3.5em", "-.5em, -6em, 3.5em", "2.5em, -6em, 3.5em"
+];
+
+const wordsList = [
+  "forest",
+  "desert",
+  "island",
+  "jungle",
+  "road",
+  "city",
+  "river",
+  "park",
+  "sea",
+  "fog",
+  "rain",
+  "snow"
+];
+const shapeClasses = ["triangle", "square", "circle"];
+const initialInnerCubePosition = ".5em, .5em, 0";
+const cornersList = [
+  "2px, 2px, calc(.5em - 2px)",
+  "2px, 2px, calc(-.5em + 2px)",
+  "calc(1em - 2px), 2px, calc(-.5em + 2px)",
+  "calc(1em - 2px), 2px, calc(.5em - 2px)",
+  
+  "0, calc(1em - 2px), calc(.5em - 2px)",
+  "0, calc(1em - 2px), calc(-.5em + 2px)",
+  "calc(1em - 2px), calc(1em - 2px), calc(-.5em + 2px)",
+  "calc(1em - 2px), calc(1em - 2px), calc(.5em - 2px)"
+];
+const letters = "abflqy";
+const colorClasses = [
+  "col-a", "col-b", "col-c", "col-d", "col-e", "col-f"
+];
+
+// Default settings
+const defVal_wallsEnabled = true;
+const defVal_cameraEnabled = true;
+const defVal_faceEnabled = true;
+const defVal_positionEnabled = true;
+const defVal_wordEnabled = true;
+const defVal_shapeEnabled = true;
+const defVal_cornerEnabled = true;
+const defVal_soundEnabled = true;
+const defVal_colorEnabled = true;
+const defVal_tileAHexColor = "#111";
+const defVal_tileBHexColor = "#888";
+const defVal_nLevel = 1;
+const defVal_sceneDimmer = 0.5;
+const defVal_zoom = 0.7;
+const defVal_perspective = 15;
+const defVal_targetNumOfStimuli = 5;
+const defVal_gameStartDelay = 3000;
+const defVal_baseDelay = 5000;
+const defVal_minDelay = 2000;
+const defVal_maxDelay = 10000;
+const defVal_prevLevelThreshold = 0.5;
+const defVal_nextLevelThreshold = 0.9;
+
+// Editable settings
+let wallsEnabled = defVal_wallsEnabled;
+let cameraEnabled = defVal_cameraEnabled;
+let faceEnabled = defVal_faceEnabled;
+let positionEnabled = defVal_positionEnabled;
+let wordEnabled = defVal_wordEnabled;
+let shapeEnabled = defVal_shapeEnabled;
+let cornerEnabled = defVal_cornerEnabled;
+let soundEnabled = defVal_soundEnabled;
+let colorEnabled = defVal_colorEnabled;
+let tileAHexColor = defVal_tileAHexColor;
+let tileBHexColor = defVal_tileBHexColor;
+let nLevel = defVal_nLevel;
+let sceneDimmer = defVal_sceneDimmer;
+let zoom = defVal_zoom;
+let perspective = defVal_perspective;
+let targetNumOfStimuli = defVal_targetNumOfStimuli;
+let gameStartDelay = defVal_gameStartDelay;
+let baseDelay = defVal_baseDelay;
+let minDelay = defVal_minDelay;
+let maxDelay = defVal_maxDelay;
+let prevLevelThreshold = defVal_prevLevelThreshold;
+let nextLevelThreshold = defVal_nextLevelThreshold;
+
+// Game states
+let matchingStimuli = 0;
+let stimuliCount = 0;
+let intervals = [];
+
+let isRunning = false;
+
+let enableWallsCheck = true;
+let enableCameraCheck = true;
+let enableFaceCheck = true;
+let enablePositionCheck = true;
+
+let enableWordCheck = true;
+let enableShapeCheck = true;
+let enableCornerCheck = true;
+let enableSoundCheck = true;
+let enableColorCheck = true;
+
+let currWalls;
+let currCamera;
+let currFace;
+let currPosition;
+
+let currWord;
+let currShape;
+let currCorner;
+let currSound;
+let currColor;
+
+let rightWalls = 0;
+let rightCamera = 0;
+let rightFace = 0;
+let rightPosition = 0;
+
+let rightWord = 0;
+let rightShape = 0;
+let rightCorner = 0;
+let rightSound = 0;
+let rightColor = 0;
+
+let wrongWalls = 0;
+let wrongCamera = 0;
+let wrongFace = 0;
+let wrongPosition = 0;
+
+let wrongWord = 0;
+let wrongShape = 0;
+let wrongCorner = 0;
+let wrongSound = 0;
+let wrongColor = 0;
+
+// Events
+wallsEnableTrigHandler(null, wallsEnabled);
+wallsEnableTrig.addEventListener("input", wallsEnableTrigHandler);
+
+cameraEnableTrigHandler(null, cameraEnabled);
+cameraEnableTrig.addEventListener("input", cameraEnableTrigHandler);
+
+faceEnableTrigHandler(null, faceEnabled);
+faceEnableTrig.addEventListener("input", faceEnableTrigHandler);
+
+positionEnableTrigHandler(null, positionEnabled);
+positionEnableTrig.addEventListener("input", positionEnableTrigHandler);
+
+wordEnableTrigHandler(null, wordEnabled);
+wordEnableTrig.addEventListener("input", wordEnableTrigHandler);
+
+shapeEnableTrigHandler(null, shapeEnabled);
+shapeEnableTrig.addEventListener("input", shapeEnableTrigHandler);
+
+cornerEnableTrigHandler(null, cornerEnabled);
+cornerEnableTrig.addEventListener("input", cornerEnableTrigHandler);
+
+soundEnableTrigHandler(null, faceEnabled);
+soundEnableTrig.addEventListener("input", soundEnableTrigHandler);
+
+colorEnableTrigHandler(null, colorEnabled);
+colorEnableTrig.addEventListener("input", colorEnableTrigHandler);
+
+nLevelInputHandler(null, nLevel);
+nLevelInput.addEventListener("input", nLevelInputHandler);
+
+sceneDimmerInputHandler(null, sceneDimmer);
+sceneDimmerInput.addEventListener("input", sceneDimmerInputHandler);
+
+zoomInputHandler(null, zoom);
+zoomInput.addEventListener("input", zoomInputHandler);
+
+perspectiveInputHandler(null, perspective);
+perspectiveInput.addEventListener("input", perspectiveInputHandler);
+
+targetStimuliInputHandler(null, targetNumOfStimuli);
+targetStimuliInput.addEventListener("input", targetStimuliInputHandler);
+
+baseDelayInputHandler(null, baseDelay);
+baseDelayInput.addEventListener("input", baseDelayInputHandler);
+
+minDelayInputHandler(null, minDelay);
+minDelayInput.addEventListener("input", minDelayInputHandler);
+
+maxDelayInputHandler(null, maxDelay);
+maxDelayInput.addEventListener("input", maxDelayInputHandler);
+
+previousLevelThresholdInputHandler(null, prevLevelThreshold * 100);
+previousLevelThresholdInput.addEventListener("input", previousLevelThresholdInputHandler);
+
+nextLevelThresholdInputHandler(null, nextLevelThreshold * 100);
+nextLevelThresholdInput.addEventListener("input", nextLevelThresholdInputHandler);
+
+
 ["walls", "camera", "face", "position", "word", "shape", "corner", "sound", "color"]
   .forEach(sense => {
     document.querySelector(".check-" + sense)
@@ -1280,3 +1343,5 @@ document.addEventListener(
     }
   }
 );
+
+loadSettings();

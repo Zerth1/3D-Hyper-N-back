@@ -41,6 +41,10 @@
 		  </div>
 		</div>
 		<div class="setting">
+			<label>N Level</label>
+			<input id="n-level" type="text" placeholder="1">
+		  </div>
+		<div class="setting">
 		  <label>Scene Dimmer</label>
 		  <input id="scene-dimmer" type="text" placeholder="0.5">
 		</div>
@@ -126,9 +130,9 @@
 	  <button class="btn play" onclick="play()">Play (q)</button>
 	  <button class="btn stop active" onclick="stop()">Stop (p)</button>
 	
-	  <label class="ctrl n-back" for="n-back">
-		N: <input id="n-back" type="number" value="1" min="1" max="9">
-	  </label>
+	  <div class="n-back">
+		N: <span id="n-back-display"></span>
+	  </div>
 	
 	  <a class="sign" href="https://www.linkedin.com/in/f3d3r1c07r0774/">@LinkedIn</a>
 	</div>	
