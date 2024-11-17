@@ -14,14 +14,14 @@
 <body>
 
 	<dialog id="recap-dialog">
-		<label class="close-button" onClick="recapDialogContent.parentElement.close()">
+		<label class="close-button" onclick="recapDialogContent.parentElement.close()">
 			<i class="bi bi-x-lg"></i>
 		</label>
 
-  		<div class="dialog-content">
-			<div id="res-dim" style="font-size: 2.5rem; text-align: center; color: #fffd;">1D</div>
+		<div class="dialog-content">
+			<div id="res-dim">1D</div>
 
-			<div class="stats-cards" style="font-size: 1.75rem; margin-top: 2rem;">
+			<div class="stats-cards" style="font-size: 1.75rem; margin: 2rem 0 2rem 0;">
 				<div class="stats-card">
 					<div class="stats-card-title">Right</div>
 					<div id="sc-res-right" class="stats-card-value">0</div>
@@ -36,7 +36,7 @@
 				</div>
 			</div>
 
-			<div style="text-align: center; margin-top: 2rem; font-size: 2.5rem;">
+			<div style="text-align: center; font-size: 2.5rem;">
 				<div class="lvl-res-move">N = <span class="lvl-before">1</span> <i class="bi bi-arrow-right"> </i><span class="lvl-after" style="font-size: 4rem;">2</span></div>
 				<div class="lvl-res-stay">N = <span class="lvl-stays">1</span></div>
 			</div>
@@ -44,11 +44,11 @@
 	</dialog>
 
 	<dialog id="stats-dialog">
-		<label class="close-button" onClick="statsDialogContent.parentElement.close()">
+		<label class="close-button" onclick="statsDialogContent.parentElement.close()">
 			<i class="bi bi-x-lg"></i>
 		</label>
 
-  		<div class="dialog-content">
+		<div class="dialog-content">
 			<div class="radio-dimensions">
 				<label class="radio-dimension">
 					<input type="radio" name="dimension" value="1" hidden>
@@ -88,7 +88,11 @@
 				</label>
 			</div>
 
-			<div class="stats-cards">
+			<div class="stats-cards" style="margin: 2rem 0 1rem 0;">
+				<div class="stats-card">
+					<div class="stats-card-title">Min N</div>
+					<div id="sc-min" class="stats-card-value">-</div>
+				</div>
 				<div class="stats-card">
 					<div class="stats-card-title">Avg N</div>
 					<div id="sc-avg" class="stats-card-value">-</div>
@@ -97,6 +101,9 @@
 					<div class="stats-card-title">Max N</div>
 					<div id="sc-max" class="stats-card-value">-</div>
 				</div>
+			</div>
+
+			<div class="stats-cards" style="margin: 0 0 2rem 0;">
 				<div class="stats-card">
 					<div class="stats-card-title">Right</div>
 					<div id="sc-right" class="stats-card-value">-</div>
@@ -134,14 +141,20 @@
 	</dialog>
 
 	<dialog id="bind-dialog">
-		<label class="close-button" onClick="bindDialogContent.parentElement.close()">
+		<label class="close-button" onclick="bindDialogContent.parentElement.close()">
 			<i class="bi bi-x-lg"></i>
 		</label>
 
-  		<div class="dialog-content">
-			<p style="text-align: center;">(Not implemented yet)</p>
-
+		<div class="dialog-content">
 			<div class="bind-form">
+				<label>Play</label><input id="binding-Play" type="text">
+				<div></div>
+				<div></div>
+				<label>Stop</label><input id="binding-Stop" type="text">
+				<label>Options</label><input id="binding-Options" type="text">
+				<div></div>
+				<div></div>
+				<label>Stats</label><input id="binding-Stats" type="text">
 				<label>Walls</label><input id="binding-Walls" type="text">
 				<label>Camera</label><input id="binding-Camera" type="text">
 				<label>Face</label><input id="binding-Face" type="text">
@@ -154,143 +167,147 @@
 			</div>
 
 			<div class="bind-actions">
-				<button class="setting-btn">Reset</button>
-				<button class="setting-btn">Save</button>
+				<button class="setting-btn" onclick="resetBindings()">Reset</button>
+				<button class="setting-btn" onclick="saveBindings()">Save</button>
 			</div>
 		</div>
 	</dialog>
-	
+
 	<input hidden id="settings-open" type="checkbox">
 	<div class="settings-wrapper">
-	  <label for="settings-open"></label>
-	  <div class="settings">
-		<div class="setting">
-		  <label>Enable Stimuli</label>
-		  <div class="subsettings-list">
-			<input class="toggle-trigger" hidden id="enable-walls" type="checkbox" checked>
-			<label class="toggle-btn" for="enable-walls">Walls</label>
-			<input class="toggle-trigger" hidden id="enable-camera" type="checkbox" checked>
-			<label class="toggle-btn" for="enable-camera">Camera</label>
-			<input class="toggle-trigger" hidden id="enable-face" type="checkbox" checked>
-			<label class="toggle-btn" for="enable-face">Face</label>
-			<input class="toggle-trigger" hidden id="enable-spatial" type="checkbox" checked>
-			<label class="toggle-btn" for="enable-spatial">Spatial</label>
-			<input class="toggle-trigger" hidden id="enable-word" type="checkbox" checked>
-			<label class="toggle-btn" for="enable-word">Word</label>
-			<input class="toggle-trigger" hidden id="enable-shape" type="checkbox" checked>
-			<label class="toggle-btn" for="enable-shape">Shape</label>
-			<input class="toggle-trigger" hidden id="enable-corner" type="checkbox" checked>
-			<label class="toggle-btn" for="enable-corner">Corner</label>
-			<input class="toggle-trigger" hidden id="enable-sound" type="checkbox" checked>
-			<label class="toggle-btn" for="enable-sound">Sound</label>
-			<input class="toggle-trigger" hidden id="enable-color" type="checkbox" checked>
-			<label class="toggle-btn" for="enable-color">Color</label>
-		  </div>
-		</div>
-		<div class="setting">
-			<button id="open-bindings" class="setting-btn">Change Bindings</button>
-		</div>
-		<div class="setting">
-			<button id="open-stats" class="setting-btn">Open Statistics</button>
-		</div>
-		<div class="setting">
-			<label>N Back Level</label>
-			<input id="n-level" type="text" placeholder="1">
-		  </div>
-		<div class="setting">
-		  <label>Scene Dimmer</label>
-		  <input id="scene-dimmer" type="text" placeholder="0.5">
-		</div>
-		<div class="setting">
-		  <label>Zoom</label>
-		  <input id="zoom" type="text" placeholder="0.8">
-		</div>
-		<div class="setting">
-		  <label>Perspective</label>
-		  <input id="perspective" type="text" placeholder="15">
-		</div>
-		<div class="setting">
-		  <label>Target Number of Stimuli</label>
-		  <input id="targetStimuli" type="text" placeholder="9">
-		</div>
-		<div class="setting">
-		  <label>Base Delay (ms)</label>
-		  <input id="baseDelay" type="text" placeholder="1000ms">
-		</div>
-		<div class="setting">
-			<label>Maximum Allowed Mistakes</label>
-			<input id="maxAllowedMistakes" type="text" placeholder="3">
-		  </div>
-		<div class="setting">
-		  <label>Level Down Correct Stimuli %</label>
-		  <input id="previousLevelThreshold" type="text" placeholder="40%">
-		</div>
-		<div class="setting">
-		  <label>Level Up Correct Stimuli %</label>
-		  <input id="nextLevelThreshold" type="text" placeholder="80%">
-		</div>
-		<div class="setting">
-			<button id="reset-settings" class="setting-btn">Reset Settings</button>
-		</div>
-		<div class="setting">
-			<button id="reset-stats" class="setting-btn">Reset Statistics</button>
-		</div>
-	  </div>  
-	</div>
-	
-	<div class="game-body">
-	  <div class="scene-wrapper">
-		<div class="scene">
-		  <div class="floor floor-bottom">
-			<div class="wall-bottom-word"></div>
-		  </div>
-		  <div class="floor floor-left">
-			<div class="wall-left-word"></div>
-		  </div>
-		  <div class="floor floor-right">
-			<div class="wall-right-word"></div>
-		  </div>
-		  <div class="cube">
-			<div class="face top"></div>
-			<div class="face bottom"></div>
-			<div class="face left"></div>
-			<div class="face right"></div>
-			<div class="face front"></div>
-			<div class="face back"></div>
-			
-			<div class="inner-cube">
-			  <div class="shape"></div>
-			  <div class="face top"></div>
-			  <div class="face bottom"></div>
-			  <div class="face left"></div>
-			  <div class="face right"></div>
-			  <div class="face front"></div>
-			  <div class="face back"></div>
+		<div class="settings">
+			<label class="close-button" onclick="toggleOptions()">
+				<i class="bi bi-x-lg"></i>
+			</label>
+
+			<div class="setting">
+				<label>Enable Stimuli</label>
+				<div class="subsettings-list">
+					<input class="toggle-trigger" hidden id="enable-walls" type="checkbox" oninput="wallsEnableTrigHandler()">
+					<label class="toggle-btn" for="enable-walls">Walls</label>
+					<input class="toggle-trigger" hidden id="enable-camera" type="checkbox" oninput="cameraEnableTrigHandler()">
+					<label class="toggle-btn" for="enable-camera">Camera</label>
+					<input class="toggle-trigger" hidden id="enable-face" type="checkbox" oninput="faceEnableTrigHandler()">
+					<label class="toggle-btn" for="enable-face">Face</label>
+					<input class="toggle-trigger" hidden id="enable-spatial" type="checkbox" oninput="positionEnableTrigHandler()">
+					<label class="toggle-btn" for="enable-spatial">Spatial</label>
+					<input class="toggle-trigger" hidden id="enable-word" type="checkbox" oninput="wordEnableTrigHandler()">
+					<label class="toggle-btn" for="enable-word">Word</label>
+					<input class="toggle-trigger" hidden id="enable-shape" type="checkbox" oninput="shapeEnableTrigHandler()">
+					<label class="toggle-btn" for="enable-shape">Shape</label>
+					<input class="toggle-trigger" hidden id="enable-corner" type="checkbox" oninput="cornerEnableTrigHandler()">
+					<label class="toggle-btn" for="enable-corner">Corner</label>
+					<input class="toggle-trigger" hidden id="enable-sound" type="checkbox" oninput="soundEnableTrigHandler()">
+					<label class="toggle-btn" for="enable-sound">Sound</label>
+					<input class="toggle-trigger" hidden id="enable-color" type="checkbox" oninput="colorEnableTrigHandler()">
+					<label class="toggle-btn" for="enable-color">Color</label>
+				</div>
 			</div>
-			
-		  </div>
+
+			<div class="setting">
+				<button class="setting-btn" onclick="openBindings()">Change Bindings</button>
+			</div>
+
+			<div class="setting">
+				<label>N Back Level</label>
+				<input id="n-level" type="text" oninput="nLevelInputHandler()">
+			</div>
+			<div class="setting">
+				<label>Scene Dimmer</label>
+				<input id="scene-dimmer" type="text" oninput="sceneDimmerInputHandler()">
+			</div>
+			<div class="setting">
+				<label>Zoom</label>
+				<input id="zoom" type="text" oninput="zoomInputHandler()">
+			</div>
+			<div class="setting">
+				<label>Perspective</label>
+				<input id="perspective" type="text" oninput="perspectiveInputHandler()">
+			</div>
+			<div class="setting">
+				<label>Target Number of Stimuli</label>
+				<input id="targetStimuli" type="text" oninput="targetStimuliInputHandler()">
+			</div>
+			<div class="setting">
+				<label>Base Delay (ms)</label>
+				<input id="baseDelay" type="text" oninput="baseDelayInputHandler()">
+			</div>
+			<div class="setting">
+				<label>Maximum Allowed Mistakes</label>
+				<input id="maxAllowedMistakes" type="text" oninput="maxAllowedMistakesInputHandler()">
+			</div>
+			<div class="setting">
+				<label>Level Down Correct Stimuli %</label>
+				<input id="previousLevelThreshold" type="text" oninput="previousLevelThresholdInputHandler()">
+			</div>
+			<div class="setting">
+				<label>Level Up Correct Stimuli %</label>
+				<input id="nextLevelThreshold" type="text" oninput="nextLevelThresholdInputHandler()">
+			</div>
+
+			<div class="setting">
+				<button class="setting-btn" onclick="resetOptions()">Reset Options</button>
+			</div>
+			<div class="setting">
+				<button class="setting-btn" onclick="resetStats()">Reset Statistics</button>
+			</div>
 		</div>
-	  </div>
-	
-	  <button class="btn check-walls">Walls (a)</button>
-	  <button class="btn check-camera">Camera (s)</button>
-	  <button class="btn check-face">Face (d)</button>
-	  <button class="btn check-position">Spatial (f)</button>
-	  
-	  <button class="btn check-word">Word (g)</button>
-	  <button class="btn check-shape">Shape (h)</button>
-	  <button class="btn check-corner">Corner (j)</button>
-	  <button class="btn check-sound">Sound (k)</button>
-	  <button class="btn check-color">Color (l)</button>
-	  <button class="btn play" onclick="play()">Play (q)</button>
-	  <button class="btn stop active" onclick="stop()">Stop (p)</button>
-	
-	  <div class="n-back">
-		N: <span id="n-back-display"></span>
-	  </div>
-	
-	  <a class="sign" href="https://www.linkedin.com/in/f3d3r1c07r0774/">@LinkedIn</a>
-	</div>	
+	</div>
+
+	<div class="game-body">
+		<div class="scene-wrapper">
+			<div class="scene">
+				<div class="floor floor-bottom">
+					<div class="wall-bottom-word"></div>
+				</div>
+				<div class="floor floor-left">
+					<div class="wall-left-word"></div>
+				</div>
+				<div class="floor floor-right">
+					<div class="wall-right-word"></div>
+				</div>
+				<div class="cube">
+					<div class="face top"></div>
+					<div class="face bottom"></div>
+					<div class="face left"></div>
+					<div class="face right"></div>
+					<div class="face front"></div>
+					<div class="face back"></div>
+
+					<div class="inner-cube">
+						<div class="shape"></div>
+						<div class="face top"></div>
+						<div class="face bottom"></div>
+						<div class="face left"></div>
+						<div class="face right"></div>
+						<div class="face front"></div>
+						<div class="face back"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<button class="btn check-walls">Walls <span class="bind-key-Walls"></span></button>
+		<button class="btn check-camera">Camera <span class="bind-key-Camera"></span></button>
+		<button class="btn check-face">Face <span class="bind-key-Face"></span></button>
+		<button class="btn check-position">Spatial <span class="bind-key-Spatial"></span></button>
+
+		<button class="btn check-word">Word <span class="bind-key-Word"></span></button>
+		<button class="btn check-shape">Shape <span class="bind-key-Shape"></span></button>
+		<button class="btn check-corner">Corner <span class="bind-key-Corner"></span></button>
+		<button class="btn check-sound">Sound <span class="bind-key-Sound"></span></button>
+		<button class="btn check-color">Color <span class="bind-key-Color"></span></button>
+
+		<button class="btn play" onclick="play()">Play <span class="bind-key-Play"></span></button>
+		<button class="btn options" onclick="toggleOptions()">Options <span class="bind-key-Options"></span></button>
+
+		<button class="btn stop active" onclick="stop()">Stop <span class="bind-key-Stop"></span></button>
+		<button class="btn stats" onclick="toggleStats()">Stats <span class="bind-key-Stats"></span></button>
+
+		<div class="n-back">N: <span id="n-back-display"></span></div>
+
+		<a class="sign" href="https://www.linkedin.com/in/f3d3r1c07r0774/">@LinkedIn</a>
+	</div>
 
 	<script src="main.js"></script>
 </body>

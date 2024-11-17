@@ -9,7 +9,9 @@ let keyBindings = {
   "Sound": "k",
   "Color": "l",
   "Play": "q",
-  "Stop": "p"
+  "Stop": "p",
+  "Options": "w",
+  "Stats": "o"
 };
 const keyBindingsCopy = JSON.parse(JSON.stringify(keyBindings));
 
@@ -406,7 +408,7 @@ function resetStats() {
   location.reload();
 };
 
-function resetSettings() {
+function resetOptions() {
   const confirmed = confirm("Are you sure you want to reset all settings?\nThis operation is irreversible.");
   if (!confirmed) {
     return;
@@ -437,6 +439,53 @@ function resetSettings() {
   location.reload();
 };
 
+function resetBindings() {
+  const confirmed = confirm("Are you sure you want to reset all bindings?\nThis operation is irreversible.");
+  if (!confirmed) {
+    return;
+  }
+
+  for (const [ stim, key ] of Object.entries(keyBindingsCopy)) {
+    document.querySelector(`[id^='binding-${stim}']`).value = key;
+  }
+  saveBindings();
+}
+
+function reloadBindKeys() {
+  for (let [ stim, key ] of Object.entries(keyBindings)) {
+    document.querySelector(`.bind-key-${stim}`).innerHTML = `(${key})`;
+  }
+}
+
+function saveBindings() {
+  const bindings = [...document.querySelectorAll("[id^='binding-']")];
+  for (let binding of bindings) {
+    const stim = binding.getAttribute("id").replace("binding-", "");
+    const key = binding.value.toLowerCase()[0];
+    binding.value = key; // Ensure just one char on save
+    if (stim && key) {
+      keyBindings[stim] = key;
+    } else {
+      alert("All buttons need a binding in order to continue.");
+    }
+  }
+  localStorage.setItem(LS_BINDINGS_KEY, JSON.stringify(keyBindings));
+  bindDialogContent.parentElement.close();
+  reloadBindKeys();
+}
+
+function loadBindings() {
+  const _keyBindings = JSON.parse(localStorage.getItem(LS_BINDINGS_KEY));
+  if (_keyBindings) {
+    keyBindings = _keyBindings;
+  }
+  reloadBindKeys();
+}
+
+function saveHistory() {
+  localStorage.setItem(LS_HISTORY_KEY, JSON.stringify(history));
+}
+
 function loadHistory() {
   const _history = JSON.parse(localStorage.getItem(LS_HISTORY_KEY));
   if (_history) {
@@ -444,12 +493,8 @@ function loadHistory() {
   }
 }
 
-function saveHistory() {
-  localStorage.setItem(LS_HISTORY_KEY, JSON.stringify(history));
-}
-
 function saveSettings() {
-  const stringifiedSettings = JSON.stringify({
+  const settings = {
     wallsEnabled,
     cameraEnabled,
     faceEnabled,
@@ -469,33 +514,36 @@ function saveSettings() {
     maxAllowedMistakes,
     prevLevelThreshold,
     nextLevelThreshold
-  });
-  localStorage.setItem(LS_SETTINGS_KEY, stringifiedSettings);
+  };
+  localStorage.setItem(LS_SETTINGS_KEY, JSON.stringify(settings));
+  return settings;
 }
 
 function loadSettings() {
-  const settings = JSON.parse(localStorage.getItem(LS_SETTINGS_KEY));
-  if (settings) {
-    wallsEnableTrigHandler(null, settings.wallsEnabled);
-    cameraEnableTrigHandler(null, settings.cameraEnabled);
-    faceEnableTrigHandler(null, settings.faceEnabled);
-    positionEnableTrigHandler(null, settings.positionEnabled);
-    wordEnableTrigHandler(null, settings.wordEnabled);
-    shapeEnableTrigHandler(null, settings.shapeEnabled);
-    cornerEnableTrigHandler(null, settings.cornerEnabled);
-    soundEnableTrigHandler(null, settings.soundEnabled);
-    colorEnableTrigHandler(null, settings.colorEnabled);
-    //
-    nLevelInputHandler(null, settings.nLevel);
-    sceneDimmerInputHandler(null, settings.sceneDimmer);
-    zoomInputHandler(null, settings.zoom);
-    perspectiveInputHandler(null, settings.perspective);
-    targetStimuliInputHandler(null, settings.targetNumOfStimuli);
-    baseDelayInputHandler(null, settings.baseDelay);
-    maxAllowedMistakesInputHandler(null, settings.maxAllowedMistakes);
-    previousLevelThresholdInputHandler(null, settings.prevLevelThreshold);
-    nextLevelThresholdInputHandler(null, settings.nextLevelThreshold);
+  let settings = JSON.parse(localStorage.getItem(LS_SETTINGS_KEY));
+  if (!settings) {
+    settings = saveSettings();
   }
+
+  wallsEnableTrigHandler(null, settings.wallsEnabled);
+  cameraEnableTrigHandler(null, settings.cameraEnabled);
+  faceEnableTrigHandler(null, settings.faceEnabled);
+  positionEnableTrigHandler(null, settings.positionEnabled);
+  wordEnableTrigHandler(null, settings.wordEnabled);
+  shapeEnableTrigHandler(null, settings.shapeEnabled);
+  cornerEnableTrigHandler(null, settings.cornerEnabled);
+  soundEnableTrigHandler(null, settings.soundEnabled);
+  colorEnableTrigHandler(null, settings.colorEnabled);
+  //
+  nLevelInputHandler(null, settings.nLevel);
+  sceneDimmerInputHandler(null, settings.sceneDimmer);
+  zoomInputHandler(null, settings.zoom);
+  perspectiveInputHandler(null, settings.perspective);
+  targetStimuliInputHandler(null, settings.targetNumOfStimuli);
+  baseDelayInputHandler(null, settings.baseDelay);
+  maxAllowedMistakesInputHandler(null, settings.maxAllowedMistakes);
+  previousLevelThresholdInputHandler(null, settings.prevLevelThreshold);
+  nextLevelThresholdInputHandler(null, settings.nextLevelThreshold);
 }
 
 function openBindings() {
@@ -505,6 +553,11 @@ function openBindings() {
   }
 }
 
+function toggleOptions() {
+  const settingsOpen = document.querySelector("#settings-open");
+  settingsOpen.checked = !settingsOpen.checked;
+}
+
 function getBar(n) {
   const html = `<div class="bar-chart-bar" style="height: ${n*2}rem;"><div>${n}</div></div>`;
   const wrap = document.createElement("DIV");
@@ -512,7 +565,12 @@ function getBar(n) {
   return wrap.firstChild;
 }
 
-function openStats(_dim) {
+function toggleStats(_dim) {
+  if (statsDialogContent.parentElement.hasAttribute("open")) {
+    statsDialogContent.parentElement.close();
+    return;
+  }
+
   statsDialogContent.parentElement.show();
   const dim = _dim || localStorage.getItem("last-dim") || 1;
   const radios = [ ...document.querySelectorAll("input[name='dimension']") ];
@@ -521,6 +579,7 @@ function openStats(_dim) {
   const bars = document.querySelector(".bar-chart-bars");
   bars.innerHTML = "";
   let avgNLevel = 0;
+  let minNLevel = 0;
   let maxNLevel = 0;
   let right = 0;
   let missed = 0;
@@ -528,10 +587,13 @@ function openStats(_dim) {
   const entries = Object.entries(_history);
   for (const [ date, points ] of entries) {
     let _avgNLevel = 0;
+    let _minNLevel = 0;
     let _maxNLevel = 0;
     for (const point of points) {
       _avgNLevel += point.nLevel;
+      _minNLevel = Math.min(_minNLevel, point.nLevel);
       _maxNLevel = Math.max(_maxNLevel, point.nLevel);
+      minNLevel = Math.min(minNLevel, _minNLevel);
       maxNLevel = Math.max(maxNLevel, _maxNLevel);
       right += point.right;
       missed += point.missed;
@@ -539,14 +601,19 @@ function openStats(_dim) {
     }
     _avgNLevel = _avgNLevel / points.length;
     avgNLevel += _avgNLevel;
-    bars.appendChild(getBar(_avgNLevel.toFixed(1)));
+    bars.appendChild(getBar(toOneDecimal(_avgNLevel)));
   }
   avgNLevel = avgNLevel / entries.length;
-  document.querySelector("#sc-avg").innerHTML = avgNLevel.toFixed(1) || "-";
+  document.querySelector("#sc-avg").innerHTML = toOneDecimal(avgNLevel) || "-";
+  document.querySelector("#sc-min").innerHTML = minNLevel || "-";
   document.querySelector("#sc-max").innerHTML = maxNLevel || "-";
   document.querySelector("#sc-right").innerHTML = right || "-";
   document.querySelector("#sc-missed").innerHTML = missed || "-";
   document.querySelector("#sc-wrong").innerHTML = wrong || "-";
+}
+
+function toOneDecimal(n) {
+  return Math.floor(n * 10) / 10;
 }
 
 function random(iterable) {
@@ -1019,127 +1086,197 @@ function stop() {
   document.querySelector(".play").classList.remove("active");
 }
 
-function checkHandler(sense) {
+function checkHandler(stimulus) {
   let curr;
   let button;
   let enable;
   
   // This part is garbage but hey I've used single vars xD
-  if (sense === "walls") {
-    curr = currWalls;
-    button = checkWallsBtn;
-    enable = enableWallsCheck;
-  } else if (sense === "camera") {
-    curr = currCamera;
-    button = checkCameraBtn;
-    enable = enableCameraCheck;
-  } else if (sense === "face") {
-    curr = currFace;
-    button = checkFaceBtn;
-    enable = enableFaceCheck;
-  } else if (sense === "position") {
-    curr = currPosition;
-    button = checkPositionBtn;
-    enable = enablePositionCheck;
-  } else if (sense === "word") {
-    curr = currWord;
-    button = checkWordBtn;
-    enable = enableWordCheck;
-  } else if (sense === "shape") {
-    curr = currShape;
-    button = checkShapeBtn;
-    enable = enableShapeCheck;
-  } else if (sense === "corner") {
-    curr = currCorner;
-    button = checkCornerBtn;
-    enable = enableCornerCheck;
-  } else if (sense === "sound") {
-    curr = currSound;
-    button = checkSoundBtn;
-    enable = enableSoundCheck;
-  } else if (sense === "color") {
-    curr = currColor;
-    button = checkColorBtn;
-    enable = enableColorCheck;
+  switch (stimulus) {
+    case "play": {
+      play();
+      return;
+    }
+    case "stop": {
+      stop();
+      return;
+    }
+    case "options": {
+      toggleOptions();
+      return;
+    }
+    case "stats": {
+      toggleStats();
+      return;
+    }
+    case "walls": {
+      curr = currWalls;
+      button = checkWallsBtn;
+      enable = enableWallsCheck;
+      break;
+    }
+    case "camera": {
+      curr = currCamera;
+      button = checkCameraBtn;
+      enable = enableCameraCheck;
+      break;
+    }
+    case "face": {
+      curr = currFace;
+      button = checkFaceBtn;
+      enable = enableFaceCheck;
+      break;
+    }
+    case "position": {
+      curr = currPosition;
+      button = checkPositionBtn;
+      enable = enablePositionCheck;
+      break;
+    }
+    case "word": {
+      curr = currWord;
+      button = checkWordBtn;
+      enable = enableWordCheck;
+      break;
+    }
+    case "shape": {
+      curr = currShape;
+      button = checkShapeBtn;
+      enable = enableShapeCheck;
+      break;
+    }
+    case "corner": {
+      curr = currCorner;
+      button = checkCornerBtn;
+      enable = enableCornerCheck;
+      break;
+    }
+    case "sound": {
+      curr = currSound;
+      button = checkSoundBtn;
+      enable = enableSoundCheck;
+      break;
+    }
+    case "color": {
+      curr = currColor;
+      button = checkColorBtn;
+      enable = enableColorCheck;
+      break;
+    }
   }
   
   if (!curr || !enable) {
     return;
   }
+
+  console.log(stimulus, curr, button, enable);
   
-  if (sense === "walls") {
-    enableWallsCheck = false;
-  } else if (sense === "camera") {
-    enableCameraCheck = false;
-  } else if (sense === "face") {
-    enableFaceCheck = false;
-  } else if (sense === "position") {
-    enablePositionCheck = false;
-  } else if (sense === "word") {
-    enableWordCheck = false;
-  } else if (sense === "shape") {
-    enableShapeCheck = false;
-  } else if (sense === "corner") {
-    enableCornerCheck = false;
-  } else if (sense === "sound") {
-    enableSoundCheck = false;
-  } else if (sense === "color") {
-    enableColorCheck = false;
-  }
-  
-  console.log(sense, curr, button, enable);
-  
-  if (curr.isMatching) {
-    
-    if (sense === "walls") {
-      rightWalls++;
-    } else if (sense === "camera") {
-      rightCamera++;
-    } else if (sense === "face") {
-      rightFace++;
-    } else if (sense === "position") {
-      rightPosition++;
-    } else if (sense === "word") {
-      rightWord++;
-    } else if (sense === "shape") {
-      rightShape++;
-    } else if (sense === "corner") {
-      rightCorner++;
-    } else if (sense === "sound") {
-      rightSound++;
-    } else if (sense === "color") {
-      rightColor++;
+  switch (stimulus) {
+    case "walls": {
+      enableWallsCheck = false;
+      if (curr.isMatching) {
+        rightWalls++;
+        button.classList.add("right");
+      } else {
+        wrongWalls++;
+        button.classList.add("wrong");
+      }
+      break;
     }
-    
-    button.classList.add("right");
-  } else {
-    
-    if (sense === "walls") {
-      wrongWalls++;
-    } else if (sense === "camera") {
-      wrongCamera++;
-    } else if (sense === "face") {
-      wrongFace++;
-    } else if (sense === "position") {
-      wrongPosition++;
-    } else if (sense === "word") {
-      wrongWord++;
-    } if (sense === "shape") {
-      wrongShape++;
-    } else if (sense === "corner") {
-      wrongCorner++;
-    } else if (sense === "sound") {
-      wrongSound++;
-    } else if (sense === "color") {
-      wrongColor++;
+    case "camera": {
+      enableCameraCheck = false;
+      if (curr.isMatching) {
+        rightCamera++;
+        button.classList.add("right");
+      } else {
+        wrongCamera++;
+        button.classList.add("wrong");
+      }
+      break;
     }
-    
-    button.classList.add("wrong");
+    case "face": {
+      enableFaceCheck = false;
+      if (curr.isMatching) {
+        rightFace++;
+        button.classList.add("right");
+      } else {
+        wrongFace++;
+        button.classList.add("wrong");
+      }
+      break;
+    }
+    case "position": {
+      enablePositionCheck = false;
+      if (curr.isMatching) {
+        rightPosition++;
+        button.classList.add("right");
+      } else {
+        wrongPosition++;
+        button.classList.add("wrong");
+      }
+      break;
+    }
+    case "word": {
+      enableWordCheck = false;
+      if (curr.isMatching) {
+        rightWord++;
+        button.classList.add("right");
+      } else {
+        wrongWord++;
+        button.classList.add("wrong");
+      }
+      break;
+    }
+    case "shape": {
+      enableShapeCheck = false;
+      if (curr.isMatching) {
+        rightShape++;
+        button.classList.add("right");
+      } else {
+        wrongShape++;
+        button.classList.add("wrong");
+      }
+      break;
+    }
+    case "corner": {
+      enableCornerCheck = false;
+      if (curr.isMatching) {
+        rightCorner++;
+        button.classList.add("right");
+      } else {
+        wrongCorner++;
+        button.classList.add("wrong");
+      }
+      break;
+    }
+    case "sound": {
+      enableSoundCheck = false;
+      if (curr.isMatching) {
+        rightSound++;
+        button.classList.add("right");
+      } else {
+        wrongSound++;
+        button.classList.add("wrong");
+      }
+      break;
+    }
+    case "color": {
+      enableColorCheck = false;
+      if (curr.isMatching) {
+        rightColor++;
+        button.classList.add("right");
+      } else {
+        wrongColor++;
+        button.classList.add("wrong");
+      }
+      break;
+    }
   }
 }
 
 const LS_SETTINGS_KEY = "hyper-n-back";
 const LS_HISTORY_KEY = "hyper-history";
+const LS_BINDINGS_KEY = "hyper-bindings";
 
 // DOM elements
 const sceneWrapper = document.querySelector(".scene-wrapper");
@@ -1184,11 +1321,6 @@ const baseDelayInput = document.querySelector("#baseDelay");
 const maxAllowedMistakesInput = document.querySelector("#maxAllowedMistakes");
 const previousLevelThresholdInput = document.querySelector("#previousLevelThreshold");
 const nextLevelThresholdInput = document.querySelector("#nextLevelThreshold");
-
-const resetSettingsButton = document.querySelector("#reset-settings");
-const resetStatsButton = document.querySelector("#reset-stats");
-const openStatsButton = document.querySelector("#open-stats");
-const openBindingsButton = document.querySelector("#open-bindings");
 
 const [
   wallsEnableTrig,
@@ -1362,68 +1494,9 @@ let wrongColor = 0;
 [ ...document.querySelectorAll("input[name='dimension'") ].forEach(el => {
   el.addEventListener("click", function(evt) {
       const dim = evt.target.value;
-      openStats(dim);
+      toggleStats(dim);
   });
 });
-
-wallsEnableTrigHandler(null, wallsEnabled);
-wallsEnableTrig.addEventListener("input", wallsEnableTrigHandler);
-
-cameraEnableTrigHandler(null, cameraEnabled);
-cameraEnableTrig.addEventListener("input", cameraEnableTrigHandler);
-
-faceEnableTrigHandler(null, faceEnabled);
-faceEnableTrig.addEventListener("input", faceEnableTrigHandler);
-
-positionEnableTrigHandler(null, positionEnabled);
-positionEnableTrig.addEventListener("input", positionEnableTrigHandler);
-
-wordEnableTrigHandler(null, wordEnabled);
-wordEnableTrig.addEventListener("input", wordEnableTrigHandler);
-
-shapeEnableTrigHandler(null, shapeEnabled);
-shapeEnableTrig.addEventListener("input", shapeEnableTrigHandler);
-
-cornerEnableTrigHandler(null, cornerEnabled);
-cornerEnableTrig.addEventListener("input", cornerEnableTrigHandler);
-
-soundEnableTrigHandler(null, faceEnabled);
-soundEnableTrig.addEventListener("input", soundEnableTrigHandler);
-
-colorEnableTrigHandler(null, colorEnabled);
-colorEnableTrig.addEventListener("input", colorEnableTrigHandler);
-
-nLevelInputHandler(null, nLevel);
-nLevelInput.addEventListener("input", nLevelInputHandler);
-
-sceneDimmerInputHandler(null, sceneDimmer);
-sceneDimmerInput.addEventListener("input", sceneDimmerInputHandler);
-
-zoomInputHandler(null, zoom);
-zoomInput.addEventListener("input", zoomInputHandler);
-
-perspectiveInputHandler(null, perspective);
-perspectiveInput.addEventListener("input", perspectiveInputHandler);
-
-targetStimuliInputHandler(null, targetNumOfStimuli);
-targetStimuliInput.addEventListener("input", targetStimuliInputHandler);
-
-baseDelayInputHandler(null, baseDelay);
-baseDelayInput.addEventListener("input", baseDelayInputHandler);
-
-maxAllowedMistakesInputHandler(null, maxAllowedMistakes);
-maxAllowedMistakesInput.addEventListener("input", maxAllowedMistakesInputHandler);
-
-previousLevelThresholdInputHandler(null, prevLevelThreshold);
-previousLevelThresholdInput.addEventListener("input", previousLevelThresholdInputHandler);
-
-nextLevelThresholdInputHandler(null, nextLevelThreshold);
-nextLevelThresholdInput.addEventListener("input", nextLevelThresholdInputHandler);
-
-resetSettingsButton.addEventListener("click", () => resetSettings(null));
-resetStatsButton.addEventListener("click", () => resetStats(null));
-openStatsButton.addEventListener("click", () => openStats(null));
-openBindingsButton.addEventListener("click", () => openBindings(null));
 
 ["walls", "camera", "face", "position", "word", "shape", "corner", "sound", "color"]
   .forEach(sense => {
@@ -1439,34 +1512,13 @@ openBindingsButton.addEventListener("click", () => openBindings(null));
       );
   });
 
-document.addEventListener(
-  "keypress",
-  evt => {
-    if (evt.code === "KeyA") {
-      checkHandler("walls");
-    } else if (evt.code === "KeyS") {
-      checkHandler("camera");
-    } else if (evt.code === "KeyD") {
-      checkHandler("face");
-    } else if (evt.code === "KeyF") {
-      checkHandler("position");
-    } else if (evt.code === "KeyG") {
-      checkHandler("word");
-    } else if (evt.code === "KeyH") {
-      checkHandler("shape");
-    } else if (evt.code === "KeyJ") {
-      checkHandler("corner");
-    } else if (evt.code === "KeyK") {
-      checkHandler("sound");
-    } else if (evt.code === "KeyL") {
-      checkHandler("color");
-    } else if (evt.code === "KeyQ") {
-      play();
-    } else if (evt.code === "KeyP") {
-      stop();
-    }
+document.addEventListener("keypress", evt => {
+  const match = Object.entries(keyBindings).find(([stim, key]) => key === evt.key);
+  if (match) {
+    checkHandler(match[0].toLowerCase());
   }
-);
+});
 
+loadBindings();
 loadSettings();
 loadHistory();
