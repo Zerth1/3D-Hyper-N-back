@@ -506,7 +506,7 @@ body {
 .play, .stop {
   position: absolute;
   z-index: 100;
-  top: 3em;
+  top: 7em;
 }
 
 .play.active {
@@ -524,7 +524,7 @@ body {
 .options, .stats {
   position: absolute;
   z-index: 100;
-  top: 7em;
+  top: 3em;
 }
 
 @media (max-width: 576px) {
@@ -537,11 +537,11 @@ body {
   }
   
   .play, .stop {
-    top: 1em;
+    top: 5em;
   }
 
   .options, .stats {
-    top: 5em;
+    top: 1em;
   }
 }
 
