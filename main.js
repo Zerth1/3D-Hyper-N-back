@@ -558,6 +558,10 @@ function toggleOptions() {
   settingsOpen.checked = !settingsOpen.checked;
 }
 
+function closeOptions() {
+  document.querySelector("#settings-open").checked = false;
+}
+
 function getBar(n) {
   const html = `<div class="bar-chart-bar" style="height: ${n*2}rem;"><div>${n}</div></div>`;
   const wrap = document.createElement("DIV");
@@ -566,7 +570,7 @@ function getBar(n) {
 }
 
 function toggleStats(_dim) {
-  if (statsDialogContent.parentElement.hasAttribute("open")) {
+  if (!_dim && statsDialogContent.parentElement.hasAttribute("open")) {
     statsDialogContent.parentElement.close();
     return;
   }
@@ -1094,6 +1098,8 @@ function checkHandler(stimulus) {
   // This part is garbage but hey I've used single vars xD
   switch (stimulus) {
     case "play": {
+      document.querySelectorAll("dialog").forEach(d => d.close());
+      closeOptions();
       play();
       return;
     }
@@ -1102,10 +1108,12 @@ function checkHandler(stimulus) {
       return;
     }
     case "options": {
+      stop();
       toggleOptions();
       return;
     }
     case "stats": {
+      stop();
       toggleStats();
       return;
     }
