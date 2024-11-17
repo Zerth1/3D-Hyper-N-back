@@ -579,7 +579,7 @@ function toggleStats(_dim) {
   const bars = document.querySelector(".bar-chart-bars");
   bars.innerHTML = "";
   let avgNLevel = 0;
-  let minNLevel = 0;
+  let minNLevel = 10;
   let maxNLevel = 0;
   let right = 0;
   let missed = 0;
@@ -587,7 +587,7 @@ function toggleStats(_dim) {
   const entries = Object.entries(_history);
   for (const [ date, points ] of entries) {
     let _avgNLevel = 0;
-    let _minNLevel = 0;
+    let _minNLevel = 10;
     let _maxNLevel = 0;
     for (const point of points) {
       _avgNLevel += point.nLevel;
@@ -605,7 +605,7 @@ function toggleStats(_dim) {
   }
   avgNLevel = avgNLevel / entries.length;
   document.querySelector("#sc-avg").innerHTML = toOneDecimal(avgNLevel) || "-";
-  document.querySelector("#sc-min").innerHTML = minNLevel || "-";
+  document.querySelector("#sc-min").innerHTML = (minNLevel === 10) ? "-" : minNLevel;
   document.querySelector("#sc-max").innerHTML = maxNLevel || "-";
   document.querySelector("#sc-right").innerHTML = right || "-";
   document.querySelector("#sc-missed").innerHTML = missed || "-";
