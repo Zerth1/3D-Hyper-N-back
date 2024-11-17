@@ -147,19 +147,13 @@ function cornerEnableTrigHandler(evt, defVal) {
   }
   
   if (!cornerEnabled) {
-    shapeEnableTrig.removeEventListener("input", shapeEnableTrigHandler);
-    
-    shapeEnabled = false;
-    if (shapeEnableTrig.checked) {
-      shapeEnableTrig.click();
-    }
+    shapeEnableTrigHandler(null, false);
     shapeEnableTrig.disabled = true;
     
     innerCube.style.display = "none";
     checkCornerBtn.style.display = "none";
     checkShapeBtn.style.display = "none";
   } else {
-    shapeEnableTrig.addEventListener("input", shapeEnableTrigHandler);
     shapeEnableTrig.disabled = false;
     
     innerCube.style.display = "block";
