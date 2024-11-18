@@ -287,22 +287,34 @@
 			</div>
 		</div>
 
-		<button class="btn check-walls">Walls <span class="bind-key-Walls"></span></button>
-		<button class="btn check-camera">Camera <span class="bind-key-Camera"></span></button>
-		<button class="btn check-face">Face <span class="bind-key-Face"></span></button>
-		<button class="btn check-position">Spatial <span class="bind-key-Spatial"></span></button>
+		<div class="left-ctrls">
+			<div class="ctrls">
+				<button class="btn options" onclick="toggleOptions()">Options <span class="bind-key-Options"></span></button>
+				<button class="btn play" onclick="play()">Play <span class="bind-key-Play"></span></button>
+			</div>
 
-		<button class="btn check-word">Word <span class="bind-key-Word"></span></button>
-		<button class="btn check-shape">Shape <span class="bind-key-Shape"></span></button>
-		<button class="btn check-corner">Corner <span class="bind-key-Corner"></span></button>
-		<button class="btn check-sound">Sound <span class="bind-key-Sound"></span></button>
-		<button class="btn check-color">Color <span class="bind-key-Color"></span></button>
+			<div class="ctrls">
+				<button class="btn check-walls">Walls <span class="bind-key-Walls"></span></button>
+				<button class="btn check-camera">Camera <span class="bind-key-Camera"></span></button>
+				<button class="btn check-face">Face <span class="bind-key-Face"></span></button>
+				<button class="btn check-position">Spatial <span class="bind-key-Spatial"></span></button>
+			</div>
+		</div>
 
-		<button class="btn play" onclick="play()">Play <span class="bind-key-Play"></span></button>
-		<button class="btn options" onclick="toggleOptions()">Options <span class="bind-key-Options"></span></button>
+		<div class="right-ctrls">
+			<div class="ctrls">
+				<button class="btn stats" onclick="toggleStats()">Stats <span class="bind-key-Stats"></span></button>
+				<button class="btn stop active" onclick="stop()">Stop <span class="bind-key-Stop"></span></button>
+			</div>
 
-		<button class="btn stop active" onclick="stop()">Stop <span class="bind-key-Stop"></span></button>
-		<button class="btn stats" onclick="toggleStats()">Stats <span class="bind-key-Stats"></span></button>
+			<div class="ctrls">
+				<button class="btn check-word">Word <span class="bind-key-Word"></span></button>
+				<button class="btn check-shape">Shape <span class="bind-key-Shape"></span></button>
+				<button class="btn check-corner">Corner <span class="bind-key-Corner"></span></button>
+				<button class="btn check-sound">Sound <span class="bind-key-Sound"></span></button>
+				<button class="btn check-color">Color <span class="bind-key-Color"></span></button>
+			</div>
+		</div>
 
 		<div class="n-back">N: <span id="n-back-display"></span></div>
 

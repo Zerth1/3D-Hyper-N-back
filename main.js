@@ -210,9 +210,9 @@ function nLevelInputHandler(evt, defVal) {
   }
 
   if (+nLevelInput.value < 1 || +nLevelInput.value > 9) {
-    nLevelInput.style.borderColor = "#f00";
+    nLevelInput.classList.add("input-incorrect");
   } else {
-    nLevelInput.style.borderColor = "#fff";
+    nLevelInput.classList.remove("input-incorrect");
     nBackDisplay.innerHTML = nLevel;
   }
 }
@@ -268,9 +268,9 @@ function targetStimuliInputHandler(evt, defVal) {
   }
 
   if (+targetStimuliInput.value < 1 || +targetStimuliInput.value > 30) {
-    targetStimuliInput.style.borderColor = "#f00";
+    targetStimuliInput.classList.add("input-incorrect");
   } else {
-    targetStimuliInput.style.borderColor = "#fff";
+    targetStimuliInput.classList.remove("input-incorrect");
   }
 }
 
@@ -284,9 +284,9 @@ function baseDelayInputHandler(evt, defVal) {
   }
 
   if (+baseDelayInput.value < 2000 || +baseDelayInput.value > 20000) {
-    baseDelayInput.style.borderColor = "#f00";
+    baseDelayInput.classList.add("input-incorrect");
   } else {
-    baseDelayInput.style.borderColor = "#fff";
+    baseDelayInput.classList.remove("input-incorrect");
   }
 }
 
@@ -300,9 +300,9 @@ function maxAllowedMistakesInputHandler(evt, defVal) {
   }
 
   if (+maxAllowedMistakesInput.value < 0 || +maxAllowedMistakesInput.value > 30) {
-    maxAllowedMistakesInput.style.borderColor = "#f00";
+    maxAllowedMistakesInput.classList.add("input-incorrect");
   } else {
-    maxAllowedMistakesInput.style.borderColor = "#fff";
+    maxAllowedMistakesInput.classList.remove("input-incorrect");
   }
 }
 
@@ -1056,6 +1056,9 @@ function play() {
   if (isRunning) {
     return;
   }
+
+  document.querySelectorAll("dialog").forEach(d => d.close());
+  closeOptions();
   
   isRunning = true;
   
@@ -1092,8 +1095,6 @@ function checkHandler(stimulus) {
   // This part is garbage but hey I've used single vars xD
   switch (stimulus) {
     case "play": {
-      document.querySelectorAll("dialog").forEach(d => d.close());
-      closeOptions();
       play();
       return;
     }
@@ -1102,12 +1103,10 @@ function checkHandler(stimulus) {
       return;
     }
     case "options": {
-      stop();
       toggleOptions();
       return;
     }
     case "stats": {
-      stop();
       toggleStats();
       return;
     }
@@ -1518,6 +1517,14 @@ document.addEventListener("keypress", evt => {
   const match = Object.entries(keyBindings).find(([stim, key]) => key === evt.key);
   if (match) {
     checkHandler(match[0].toLowerCase());
+  }
+});
+
+document.addEventListener("keydown", evt  => {
+  if (evt.key === "Escape") {
+    document.querySelectorAll("dialog").forEach(d => d.close());
+    closeOptions();
+    stop();
   }
 });
 
