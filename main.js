@@ -2,7 +2,7 @@ let keyBindings = {
   "Walls": "a",
   "Camera": "s",
   "Face": "d",
-  "Spatial": "f",
+  "Position": "f",
   "Word": "g",
   "Shape": "h",
   "Corner": "j",
@@ -471,7 +471,13 @@ function saveBindings() {
 function loadBindings() {
   const _keyBindings = JSON.parse(localStorage.getItem(LS_BINDINGS_KEY));
   if (_keyBindings) {
-    keyBindings = _keyBindings;
+    let validConf = true;
+    for (const binding of Object.keys(_keyBindings)) {
+      if (!Object.keys(keyBindingsCopy).includes(binding)) {
+        validConf = false;
+      }
+    }
+    keyBindings = validConf ? _keyBindings : keyBindingsCopy;;
   }
   reloadBindKeys();
 }
