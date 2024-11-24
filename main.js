@@ -1,3 +1,7 @@
+function deepCopy(anything) {
+  return JSON.parse(JSON.stringify(anything));
+}
+
 let keyBindings = {
   "Walls": "a",
   "Camera": "s",
@@ -13,7 +17,7 @@ let keyBindings = {
   "Options": "w",
   "Stats": "o"
 };
-const keyBindingsCopy = JSON.parse(JSON.stringify(keyBindings));
+const keyBindingsDefault = deepCopy(keyBindings);
 
 let history = {
   1: {},
@@ -26,7 +30,7 @@ let history = {
   8: {},
   9: {}
 };
-const historyCopy = JSON.parse(JSON.stringify(history));
+const historyDefault = deepCopy(history);
 
 // Functions
 function wallsEnableTrigHandler(evt, defVal) {
@@ -397,7 +401,7 @@ function resetStats() {
     return;
   }
 
-  history = historyCopy;
+  history = historyDefault;
 
   location.reload();
 };
@@ -439,7 +443,7 @@ function resetBindings() {
     return;
   }
 
-  for (const [ stim, key ] of Object.entries(keyBindingsCopy)) {
+  for (const [ stim, key ] of Object.entries(keyBindingsDefault)) {
     document.querySelector(`[id^='binding-${stim}']`).value = key;
   }
   saveBindings();
@@ -473,11 +477,11 @@ function loadBindings() {
   if (_keyBindings) {
     let validConf = true;
     for (const binding of Object.keys(_keyBindings)) {
-      if (!Object.keys(keyBindingsCopy).includes(binding)) {
+      if (!Object.keys(keyBindingsDefault).includes(binding)) {
         validConf = false;
       }
     }
-    keyBindings = validConf ? _keyBindings : keyBindingsCopy;;
+    keyBindings = validConf ? _keyBindings : deepCopy(keyBindingsDefault);
   }
   reloadBindKeys();
 }
