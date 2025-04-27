@@ -774,9 +774,9 @@ function resetBlock() {
 }
 
 function resetIntervals() {
-  intervals.forEach(interval => 
-    clearInterval(interval)
-  );
+  intervals.forEach(interval => {
+    clearTimeout(interval);
+  });
 }
 
 function rotateCamera(cx, cy) {
@@ -1076,9 +1076,13 @@ function play() {
   document.querySelector(".stop").classList.remove("active");
   document.querySelector(".play").classList.add("active");
 
-  intervals.push(
-    setInterval(getGameCycle(nLevel), baseDelay)
-  );
+  const gameCycle = getGameCycle(nLevel);
+  const cb = () => {
+    gameCycle();
+    intervals.push(setTimeout(cb, baseDelay));
+  }
+
+  intervals.push(setTimeout(cb, 3000));
 }
 
 function stop() {
