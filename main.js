@@ -634,12 +634,9 @@ function random(iterable) {
 
 // Create the blocks
 function createBlocks(symbols, n) {
-  
   // I don't know how many matching stimuli will be generated in the end
   // But I'm sure they are more than stimuli
-  let blocks = Array(
-    targetNumOfStimuli * (n + 2) + targetNumOfStimuli
-  ).fill(null);
+  let blocks = Array(targetNumOfStimuli * (n + 2) + targetNumOfStimuli).fill(null);
   // Place stimuli
   for (let i = 0; i < targetNumOfStimuli; i++) {
     // Pick a letter
@@ -774,10 +771,10 @@ function resetBlock() {
 }
 
 function resetIntervals() {
-  intervals.forEach(interval => {
-    clearTimeout(interval);
-  });
-  intervals = [];
+  intervals.forEach(interval => clearTimeout(interval));
+  while (intervals.length) {
+    intervals.pop();
+  }
 }
 
 function rotateCamera(cx, cy) {
@@ -945,7 +942,7 @@ function getGameCycle(n) {
       console.log("mistakes", mistakes);
       console.log("dimensions", dimensions);
       
-      stop(); // This resets stuff (matchingStimuli etc...)
+      stop();
 
       const resDim = document.querySelector("#res-dim");
       const resRight = document.querySelector("#sc-res-right");
@@ -1064,14 +1061,14 @@ function play() {
     return;
   }
 
-  resetPoints();
-  resetBlock();
-  resetIntervals();
-
   document.querySelectorAll("dialog").forEach(d => d.close());
   closeOptions();
   
   isRunning = true;
+
+  resetPoints();
+  resetBlock();
+  resetIntervals();
   
   speak("Start.");
   document.querySelector(".stop").classList.remove("active");
@@ -1092,6 +1089,10 @@ function stop() {
   }
   
   isRunning = false;
+
+  resetPoints();
+  resetBlock();
+  resetIntervals();
   
   speak("Stop.");
   document.querySelector(".stop").classList.add("active");
