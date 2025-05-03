@@ -1064,6 +1064,10 @@ function play() {
     return;
   }
 
+  resetPoints();
+  resetBlock();
+  resetIntervals();
+
   document.querySelectorAll("dialog").forEach(d => d.close());
   closeOptions();
   
@@ -1086,10 +1090,6 @@ function stop() {
   if (!isRunning) {
     return;
   }
-  
-  resetPoints();
-  resetBlock();
-  resetIntervals();
   
   isRunning = false;
   
