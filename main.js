@@ -777,6 +777,7 @@ function resetIntervals() {
   intervals.forEach(interval => {
     clearTimeout(interval);
   });
+  intervals = [];
 }
 
 function rotateCamera(cx, cy) {
@@ -811,7 +812,6 @@ function writeWord(word) {
 }
 
 function getGameCycle(n) {
-  
   let walls;
   if (wallsEnabled) {
     walls = createBlocks(wallColorsList, n);
@@ -856,7 +856,6 @@ function getGameCycle(n) {
   
   let i = 0;
   return function() {
-    
     resetBlock();
     
     if (!isRunning) {
@@ -868,7 +867,6 @@ function getGameCycle(n) {
     
     // End game
     if (i > length - 1) {
-      
       let correctStimuli = 0;
       if (wallsEnabled) {
         dimensions++;
@@ -1058,7 +1056,6 @@ function getGameCycle(n) {
     
     // Increase block index
     i++;
-    
   }
 }
 
