@@ -1102,6 +1102,12 @@ function play() {
   if (cornerEnabled) {
     remainder -= 1
   }
+  if (!cornerEnabled) {
+    checkCornerBtn.style.display = "none";
+  } else {
+    checkCornerBtn.style.display = "inline-block";
+  }
+  checkShapeBtn.style.animationDelay = "0s";
   shapeEnabled = selection_slice.some(num => num === 7);
   if (shapeEnabled) {
     if (!cornerEnabled) {
@@ -1111,33 +1117,73 @@ function play() {
       remainder -= 1
     }
   }
+  if (!shapeEnabled) {
+    checkShapeBtn.style.display = "none";
+  } else {
+    checkShapeBtn.style.display = "inline-block";
+  }
   wallsEnabled = selection_slice.some(num => num === 1);
   if (wallsEnabled) {
     remainder -= 1
+  }
+  if (!wallsEnabled) {
+    checkWallsBtn.style.display = "none";
+  } else {
+    checkWallsBtn.style.display = "inline-block";
   }
   cameraEnabled = selection_slice.some(num => num === 2);
   if (cameraEnabled) {
     remainder -= 1
   }
+  if (!cameraEnabled) {
+    checkCameraBtn.style.display = "none";
+  } else {
+    checkCameraBtn.style.display = "inline-block";
+  }
   faceEnabled = (remainder > 0) && selection_slice.some(num => num === 3);
   if (faceEnabled) {
     remainder -= 1
+  }
+  if (!faceEnabled) {
+    checkFaceBtn.style.display = "none";
+  } else {
+    checkFaceBtn.style.display = "inline-block";
   }
   positionEnabled = (remainder > 0) && selection_slice.some(num => num === 4);
   if (positionEnabled) {
     remainder -= 1
   }
+  if (!positionEnabled) {
+    checkPositionBtn.style.display = "none";
+  } else {
+    checkPositionBtn.style.display = "inline-block";
+  }
   wordEnabled = (remainder > 0) && selection_slice.some(num => num === 5);
   if (wordEnabled) {
     remainder -= 1
+  }
+  if (!wordEnabled) {
+    checkWordBtn.style.display = "none";
+  } else {
+    checkWordBtn.style.display = "inline-block";
   }
   soundEnabled = (remainder > 0) && selection_slice.some(num => num === 8);
   if (soundEnabled) {
     remainder -= 1
   }
+  if (!soundEnabled) {
+    checkSoundBtn.style.display = "none";
+  } else {
+    checkSoundBtn.style.display = "inline-block";
+  }
   colorEnabled = (remainder > 0) && selection_slice.some(num => num === 9);
   if (colorEnabled) {
     remainder -= 1
+  }
+  if (!colorEnabled) {
+    checkColorBtn.style.display = "none";
+  } else {
+    checkColorBtn.style.display = "inline-block";
   }
   const gameCycle = getGameCycle(nLevel);
   const cb = () => {
