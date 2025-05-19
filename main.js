@@ -1452,7 +1452,7 @@ for (let i = selection.length - 1; i > 0; i--) {
   let j = Math.floor(Math.random() * (i + 1));
   [selection[i], selection[j]] = [selection[j], selection[i]];
 }
-let selection_slice = numbers.slice(0, 4); // First 4 unique random numbers
+let selection_slice = selection.slice(0, 4); // First 4 unique random numbers
 // Editable settings
 let wallsEnabled = selection_slice.some(num => num === 1);
 let cameraEnabled = selection_slice.some(num => num === 2);
