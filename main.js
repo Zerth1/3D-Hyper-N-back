@@ -469,7 +469,7 @@ function saveBindings() {
 }
 function loadBindings() {
   indexMapping = ["a", "f", "j", "l"]
-  bindingOrder = []
+  bindingOrder = {}
   startingIndex = 0
   if (wallsEnabled) {
     bindingOrder["Walls"] = indexMapping[startingIndex]
