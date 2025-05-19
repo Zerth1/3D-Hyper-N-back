@@ -524,11 +524,27 @@ function saveSettings() {
 }
 
 function loadSettings() {
-  let settings = JSON.parse(localStorage.getItem(LS_SETTINGS_KEY));
-  if (!settings) {
-    settings = saveSettings();
-  }
-
+  let settings = {
+    wallsEnabled,
+    cameraEnabled,
+    faceEnabled,
+    positionEnabled,
+    wordEnabled,
+    shapeEnabled,
+    cornerEnabled,
+    soundEnabled,
+    colorEnabled,
+    //
+    nLevel,
+    sceneDimmer,
+    zoom,
+    perspective,
+    targetNumOfStimuli,
+    baseDelay,
+    maxAllowedMistakes,
+    prevLevelThreshold,
+    nextLevelThreshold
+  } 
   wallsEnableTrigHandler(null, settings.wallsEnabled);
   cameraEnableTrigHandler(null, settings.cameraEnabled);
   faceEnableTrigHandler(null, settings.faceEnabled);
@@ -1430,23 +1446,30 @@ const defVal_maxAllowedMistakes = 3;
 const defVal_prevLevelThreshold = 0.5;
 const defVal_nextLevelThreshold = 0.8;
 
+let selection = Array.from({ length: 9 }, (_, i) => i + 1); // [1, 2, ..., 9]
+// Shuffle the array
+for (let i = selection.length - 1; i > 0; i--) {
+  let j = Math.floor(Math.random() * (i + 1));
+  [selection[i], selection[j]] = [selection[j], selection[i]];
+}
+let selection_slice = numbers.slice(0, 4); // First 4 unique random numbers
 // Editable settings
-let wallsEnabled = defVal_wallsEnabled;
-let cameraEnabled = defVal_cameraEnabled;
-let faceEnabled = defVal_faceEnabled;
-let positionEnabled = defVal_positionEnabled;
-let wordEnabled = defVal_wordEnabled;
-let shapeEnabled = defVal_shapeEnabled;
-let cornerEnabled = defVal_cornerEnabled;
-let soundEnabled = defVal_soundEnabled;
-let colorEnabled = defVal_colorEnabled;
+let wallsEnabled = selection_slice.some(num => num === 1);
+let cameraEnabled = selection_slice.some(num => num === 2);
+let faceEnabled = selection_slice.some(num => num === 3);
+let positionEnabled = selection_slice.some(num => num === 4);
+let wordEnabled = selection_slice.some(num => num === 5);
+let shapeEnabled = selection_slice.some(num => num === 6);
+let cornerEnabled = selection_slice.some(num => num === 7);
+let soundEnabled = selection_slice.some(num => num === 8);
+let colorEnabled = selection_slice.some(num => num === 9);
 let tileAHexColor = defVal_tileAHexColor;
 let tileBHexColor = defVal_tileBHexColor;
 let nLevel = defVal_nLevel;
 let sceneDimmer = defVal_sceneDimmer;
 let zoom = defVal_zoom;
 let perspective = defVal_perspective;
-let targetNumOfStimuli = defVal_targetNumOfStimuli;
+let targetNumOfStimuli = 4;
 let baseDelay = defVal_baseDelay;
 let maxAllowedMistakes = defVal_maxAllowedMistakes;
 let prevLevelThreshold = defVal_prevLevelThreshold;
