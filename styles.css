@@ -598,25 +598,13 @@ body {
     );
 }
 
-.check-walls, .check-camera, .check-face, .check-position {
+.check-walls, .check-camera, .check-face, .check-position, .check-word, .check-shape, .check-corner, .check-sound, .check-color {
   transform:
     rotateX(-7.5deg)
     rotateY(-5deg);
   background-image:
     linear-gradient(
       45deg,
-      #0004,
-      #fff8
-    );
-}
-
-.check-word, .check-shape, .check-corner, .check-sound, .check-color {
-  transform:
-    rotateX(-7.5deg)
-    rotateY(5deg);
-  background-image:
-    linear-gradient(
-      -45deg,
       #0004,
       #fff8
     );
