@@ -7,11 +7,6 @@ let keyBindings = {
   "Camera": "s",
   "Face": "d",
   "Position": "f",
-  "Word": "g",
-  "Shape": "h",
-  "Corner": "j",
-  "Sound": "k",
-  "Color": "l",
   "Play": "q",
   "Stop": "p",
   "Options": "w",
@@ -471,18 +466,51 @@ function saveBindings() {
   bindDialogContent.parentElement.close();
   reloadBindKeys();
 }
-
 function loadBindings() {
-  const _keyBindings = JSON.parse(localStorage.getItem(LS_BINDINGS_KEY));
-  if (_keyBindings) {
-    let validConf = true;
-    for (const binding of Object.keys(_keyBindings)) {
-      if (!Object.keys(keyBindingsDefault).includes(binding)) {
-        validConf = false;
-      }
-    }
-    keyBindings = validConf ? _keyBindings : deepCopy(keyBindingsDefault);
+  indexMapping = ["a", "f", "j", "l"]
+  bindingOrder = []
+  startingIndex = 0
+  if (wallsEnabled) {
+    bindingOrder["Walls"] = indexMapping[startingIndex]
+    startingIndex += 1
   }
+  if (cameraEnabled) {
+    bindingOrder["Camera"] = indexMapping[startingIndex]
+    startingIndex += 1
+  }
+  if (faceEnabled) {
+    bindingOrder["Face"] = indexMapping[startingIndex]
+    startingIndex += 1
+  }
+  if (positionEnabled) {
+    bindingOrder["Position"] = indexMapping[startingIndex]
+    startingIndex += 1
+  } 
+  if ((startingIndex < 4) && wordEnabled) {
+    bindingOrder["Word"] = indexMapping[startingIndex]
+    startingIndex += 1
+  }
+  if ((startingIndex < 4) && shapeEnabled) {
+    bindingOrder["Shape"] = indexMapping[startingIndex]
+    startingIndex += 1
+  }
+  if ((startingIndex < 4) && cornerEnabled) {
+    bindingOrder["Corner"] = indexMapping[startingIndex]
+    startingIndex += 1
+  }
+  if ((startingIndex < 4) && soundEnabled) {
+    bindingOrder["Sound"] = indexMapping[startingIndex]
+    startingIndex += 1
+  }
+  if ((startingIndex < 4) && colorEnabled) {
+    bindingOrder["Color"] = indexMapping[startingIndex]
+    startingIndex += 1
+  }
+  bindingOrder["Play"] = "q"
+  bindingOrder["Stop"] = "p"
+  bindingOrder["Options"] = "w"
+  bindingOrder["Stats"] = "o"
+  keyBindings = bindingOrder
   reloadBindKeys();
 }
 
