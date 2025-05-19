@@ -573,25 +573,25 @@ function loadSettings() {
     prevLevelThreshold,
     nextLevelThreshold
   } 
-  wallsEnableTrigHandler(null, settings.wallsEnabled);
-  cameraEnableTrigHandler(null, settings.cameraEnabled);
-  faceEnableTrigHandler(null, settings.faceEnabled);
-  positionEnableTrigHandler(null, settings.positionEnabled);
-  wordEnableTrigHandler(null, settings.wordEnabled);
-  shapeEnableTrigHandler(null, settings.shapeEnabled);
-  cornerEnableTrigHandler(null, settings.cornerEnabled);
-  soundEnableTrigHandler(null, settings.soundEnabled);
-  colorEnableTrigHandler(null, settings.colorEnabled);
+  wallsEnableTrigHandler(null, wallsEnabled);
+  cameraEnableTrigHandler(null, cameraEnabled);
+  faceEnableTrigHandler(null, faceEnabled);
+  positionEnableTrigHandler(null, positionEnabled);
+  wordEnableTrigHandler(null, wordEnabled);
+  shapeEnableTrigHandler(null, shapeEnabled);
+  cornerEnableTrigHandler(null, cornerEnabled);
+  soundEnableTrigHandler(null, soundEnabled);
+  colorEnableTrigHandler(null, colorEnabled);
   //
-  nLevelInputHandler(null, settings.nLevel);
-  sceneDimmerInputHandler(null, settings.sceneDimmer);
-  zoomInputHandler(null, settings.zoom);
-  perspectiveInputHandler(null, settings.perspective);
-  targetStimuliInputHandler(null, settings.targetNumOfStimuli);
-  baseDelayInputHandler(null, settings.baseDelay);
-  maxAllowedMistakesInputHandler(null, settings.maxAllowedMistakes);
-  previousLevelThresholdInputHandler(null, settings.prevLevelThreshold);
-  nextLevelThresholdInputHandler(null, settings.nextLevelThreshold);
+  nLevelInputHandler(null, nLevel);
+  sceneDimmerInputHandler(null, sceneDimmer);
+  zoomInputHandler(null, zoom);
+  perspectiveInputHandler(null, perspective);
+  targetStimuliInputHandler(null, targetNumOfStimuli);
+  baseDelayInputHandler(null, baseDelay);
+  maxAllowedMistakesInputHandler(null, maxAllowedMistakes);
+  previousLevelThresholdInputHandler(null, prevLevelThreshold);
+  nextLevelThresholdInputHandler(null, nextLevelThreshold);
 }
 
 function openBindings() {
