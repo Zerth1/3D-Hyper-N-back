@@ -510,7 +510,7 @@ body {
   box-shadow: 0 0 1em #f004;
 }
 
-.left-ctrls, .right-ctrls {
+.left-ctrls {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -523,10 +523,6 @@ body {
 
 .left-ctrls {
   left: 1rem;
-}
-
-.right-ctrls {
-  right: 1rem;
 }
 
 .ctrls {
