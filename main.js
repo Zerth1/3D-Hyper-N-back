@@ -1744,7 +1744,6 @@ let wrongCorner = 0;
 let wrongSound = 0;
 let wrongColor = 0;
 
-loadBindings();
 // Events
 [ ...document.querySelectorAll("input[name='dimension'") ].forEach(el => {
   el.addEventListener("click", function(evt) {
@@ -1782,6 +1781,7 @@ document.addEventListener("keydown", evt  => {
   }
 });
 
+loadBindings();
 loadSettings();
 loadHistory();
 console.log("Running")
