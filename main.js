@@ -1222,6 +1222,7 @@ function play() {
     checkColorBtn.style.display = "inline-block";
   }
   checkColorBtn.style.animationDelay = "0s";
+  loadBindings();
   const gameCycle = getGameCycle(nLevel);
   const cb = () => {
     gameCycle();
