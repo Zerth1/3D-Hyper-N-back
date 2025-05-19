@@ -1089,7 +1089,56 @@ function play() {
   speak("Start.");
   document.querySelector(".stop").classList.remove("active");
   document.querySelector(".play").classList.add("active");
-
+  selection = Array.from({ length: 9 }, (_, i) => i + 1); // [1, 2, ..., 9]
+  // Shuffle the array
+  for (let i = selection.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [selection[i], selection[j]] = [selection[j], selection[i]];
+  }
+  selection_slice = selection.slice(0, 4); // First 4 unique random numbers
+  remainder = 4
+  // Editable settings
+  cornerEnabled = selection_slice.some(num => num === 6);
+  if (cornerEnabled) {
+    remainder -= 1
+  }
+  shapeEnabled = selection_slice.some(num => num === 7);
+  if (shapeEnabled) {
+    if (!cornerEnabled) {
+       remainder -= 2
+       cornerEnabled = true 
+    } else {
+      remainder -= 1
+    }
+  }
+  wallsEnabled = selection_slice.some(num => num === 1);
+  if (wallsEnabled) {
+    remainder -= 1
+  }
+  cameraEnabled = selection_slice.some(num => num === 2);
+  if (cameraEnabled) {
+    remainder -= 1
+  }
+  faceEnabled = (remainder > 0) && selection_slice.some(num => num === 3);
+  if (faceEnabled) {
+    remainder -= 1
+  }
+  positionEnabled = (remainder > 0) && selection_slice.some(num => num === 4);
+  if (positionEnabled) {
+    remainder -= 1
+  }
+  wordEnabled = (remainder > 0) && selection_slice.some(num => num === 5);
+  if (wordEnabled) {
+    remainder -= 1
+  }
+  soundEnabled = (remainder > 0) && selection_slice.some(num => num === 8);
+  if (soundEnabled) {
+    remainder -= 1
+  }
+  colorEnabled = (remainder > 0) && selection_slice.some(num => num === 9);
+  if (colorEnabled) {
+    remainder -= 1
+  }
   const gameCycle = getGameCycle(nLevel);
   const cb = () => {
     gameCycle();
