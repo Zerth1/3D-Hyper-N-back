@@ -98,13 +98,6 @@ body {
   padding: 0.5rem;
 }
 
-.subsettings-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: .5em;
-  margin-top: 8px;
-}
-
 .toggle-btn {
   display: flex;
   justify-content: center;
