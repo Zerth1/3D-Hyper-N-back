@@ -574,16 +574,6 @@ function loadSettings() {
     prevLevelThreshold,
     nextLevelThreshold
   } 
-  wallsEnableTrigHandler(null, wallsEnabled);
-  cameraEnableTrigHandler(null, cameraEnabled);
-  faceEnableTrigHandler(null, faceEnabled);
-  positionEnableTrigHandler(null, positionEnabled);
-  wordEnableTrigHandler(null, wordEnabled);
-  shapeEnableTrigHandler(null, shapeEnabled);
-  cornerEnableTrigHandler(null, cornerEnabled);
-  soundEnableTrigHandler(null, soundEnabled);
-  colorEnableTrigHandler(null, colorEnabled);
-  //
   nLevelInputHandler(null, nLevel);
   sceneDimmerInputHandler(null, sceneDimmer);
   zoomInputHandler(null, zoom);
@@ -1483,18 +1473,6 @@ const baseDelayInput = document.querySelector("#baseDelay");
 const maxAllowedMistakesInput = document.querySelector("#maxAllowedMistakes");
 const previousLevelThresholdInput = document.querySelector("#previousLevelThreshold");
 const nextLevelThresholdInput = document.querySelector("#nextLevelThreshold");
-
-const [
-  wallsEnableTrig,
-  cameraEnableTrig,
-  faceEnableTrig,
-  positionEnableTrig,
-  wordEnableTrig,
-  shapeEnableTrig,
-  cornerEnableTrig,
-  soundEnableTrig,
-  colorEnableTrig
-] = [...document.querySelectorAll(".toggle-trigger")];
 
 // Game settings
 const wallColorsList = [
