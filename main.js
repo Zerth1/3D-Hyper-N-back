@@ -1107,7 +1107,7 @@ function play() {
   } else {
     checkCornerBtn.style.display = "inline-block";
   }
-  checkShapeBtn.style.animationDelay = "0s";
+  checkCornerBtn.style.animationDelay = "0s";
   shapeEnabled = selection_slice.some(num => num === 7);
   if (shapeEnabled) {
     if (!cornerEnabled) {
@@ -1122,6 +1122,7 @@ function play() {
   } else {
     checkShapeBtn.style.display = "inline-block";
   }
+  checkShapeBtn.style.animationDelay = "0s";
   wallsEnabled = selection_slice.some(num => num === 1);
   if (wallsEnabled) {
     remainder -= 1
@@ -1131,6 +1132,7 @@ function play() {
   } else {
     checkWallsBtn.style.display = "inline-block";
   }
+  checkWallsBtn.style.animationDelay = "0s";
   cameraEnabled = selection_slice.some(num => num === 2);
   if (cameraEnabled) {
     remainder -= 1
@@ -1140,6 +1142,7 @@ function play() {
   } else {
     checkCameraBtn.style.display = "inline-block";
   }
+  checkCameraBtn.style.animationDelay = "0s";
   faceEnabled = (remainder > 0) && selection_slice.some(num => num === 3);
   if (faceEnabled) {
     remainder -= 1
@@ -1149,6 +1152,7 @@ function play() {
   } else {
     checkFaceBtn.style.display = "inline-block";
   }
+  checkFaceBtn.style.animationDelay = "0s";
   positionEnabled = (remainder > 0) && selection_slice.some(num => num === 4);
   if (positionEnabled) {
     remainder -= 1
@@ -1158,6 +1162,7 @@ function play() {
   } else {
     checkPositionBtn.style.display = "inline-block";
   }
+  checkPositionBtn.style.animationDelay = "0s";
   wordEnabled = (remainder > 0) && selection_slice.some(num => num === 5);
   if (wordEnabled) {
     remainder -= 1
@@ -1167,6 +1172,7 @@ function play() {
   } else {
     checkWordBtn.style.display = "inline-block";
   }
+  checkWordBtn.style.animationDelay = "0s";
   soundEnabled = (remainder > 0) && selection_slice.some(num => num === 8);
   if (soundEnabled) {
     remainder -= 1
@@ -1176,6 +1182,7 @@ function play() {
   } else {
     checkSoundBtn.style.display = "inline-block";
   }
+  checkSoundBtn.style.animationDelay = "0s";
   colorEnabled = (remainder > 0) && selection_slice.some(num => num === 9);
   if (colorEnabled) {
     remainder -= 1
@@ -1185,6 +1192,7 @@ function play() {
   } else {
     checkColorBtn.style.display = "inline-block";
   }
+  checkColorBtn.style.animationDelay = "0s";
   const gameCycle = getGameCycle(nLevel);
   const cb = () => {
     gameCycle();
@@ -1541,16 +1549,16 @@ const defVal_maxAllowedMistakes = 3;
 const defVal_prevLevelThreshold = 0.5;
 const defVal_nextLevelThreshold = 0.8;
 
-selection = Array.from({ length: 9 }, (_, i) => i + 1); // [1, 2, ..., 9]
+let selection = Array.from({ length: 9 }, (_, i) => i + 1); // [1, 2, ..., 9]
 // Shuffle the array
 for (let i = selection.length - 1; i > 0; i--) {
   let j = Math.floor(Math.random() * (i + 1));
   [selection[i], selection[j]] = [selection[j], selection[i]];
 }
-selection_slice = selection.slice(0, 4); // First 4 unique random numbers
-remainder = 4
+let selection_slice = selection.slice(0, 4); // First 4 unique random numbers
+let remainder = 4
 // Editable settings
-cornerEnabled = selection_slice.some(num => num === 6);
+let cornerEnabled = selection_slice.some(num => num === 6);
 if (cornerEnabled) {
   remainder -= 1
 }
@@ -1559,8 +1567,8 @@ if (!cornerEnabled) {
 } else {
   checkCornerBtn.style.display = "inline-block";
 }
-checkShapeBtn.style.animationDelay = "0s";
-shapeEnabled = selection_slice.some(num => num === 7);
+checkCornerBtn.style.animationDelay = "0s";
+let shapeEnabled = selection_slice.some(num => num === 7);
 if (shapeEnabled) {
   if (!cornerEnabled) {
       remainder -= 2
@@ -1574,7 +1582,8 @@ if (!shapeEnabled) {
 } else {
   checkShapeBtn.style.display = "inline-block";
 }
-wallsEnabled = selection_slice.some(num => num === 1);
+checkShapeBtn.style.animationDelay = "0s";
+let wallsEnabled = selection_slice.some(num => num === 1);
 if (wallsEnabled) {
   remainder -= 1
 }
@@ -1583,7 +1592,8 @@ if (!wallsEnabled) {
 } else {
   checkWallsBtn.style.display = "inline-block";
 }
-cameraEnabled = selection_slice.some(num => num === 2);
+checkWallsBtn.style.animationDelay = "0s";
+let cameraEnabled = selection_slice.some(num => num === 2);
 if (cameraEnabled) {
   remainder -= 1
 }
@@ -1592,7 +1602,8 @@ if (!cameraEnabled) {
 } else {
   checkCameraBtn.style.display = "inline-block";
 }
-faceEnabled = (remainder > 0) && selection_slice.some(num => num === 3);
+checkCameraBtn.style.animationDelay = "0s";
+let faceEnabled = (remainder > 0) && selection_slice.some(num => num === 3);
 if (faceEnabled) {
   remainder -= 1
 }
@@ -1601,7 +1612,8 @@ if (!faceEnabled) {
 } else {
   checkFaceBtn.style.display = "inline-block";
 }
-positionEnabled = (remainder > 0) && selection_slice.some(num => num === 4);
+checkFaceBtn.style.animationDelay = "0s";
+let positionEnabled = (remainder > 0) && selection_slice.some(num => num === 4);
 if (positionEnabled) {
   remainder -= 1
 }
@@ -1610,7 +1622,8 @@ if (!positionEnabled) {
 } else {
   checkPositionBtn.style.display = "inline-block";
 }
-wordEnabled = (remainder > 0) && selection_slice.some(num => num === 5);
+checkPositionBtn.style.animationDelay = "0s";
+let wordEnabled = (remainder > 0) && selection_slice.some(num => num === 5);
 if (wordEnabled) {
   remainder -= 1
 }
@@ -1619,7 +1632,8 @@ if (!wordEnabled) {
 } else {
   checkWordBtn.style.display = "inline-block";
 }
-soundEnabled = (remainder > 0) && selection_slice.some(num => num === 8);
+checkWordBtn.style.animationDelay = "0s";
+let soundEnabled = (remainder > 0) && selection_slice.some(num => num === 8);
 if (soundEnabled) {
   remainder -= 1
 }
@@ -1628,7 +1642,8 @@ if (!soundEnabled) {
 } else {
   checkSoundBtn.style.display = "inline-block";
 }
-colorEnabled = (remainder > 0) && selection_slice.some(num => num === 9);
+checkSoundBtn.style.animationDelay = "0s";
+let colorEnabled = (remainder > 0) && selection_slice.some(num => num === 9);
 if (colorEnabled) {
   remainder -= 1
 }
@@ -1637,6 +1652,7 @@ if (!colorEnabled) {
 } else {
   checkColorBtn.style.display = "inline-block";
 }
+checkColorBtn.style.animationDelay = "0s";
 let tileAHexColor = defVal_tileAHexColor;
 let tileBHexColor = defVal_tileBHexColor;
 let nLevel = defVal_nLevel;
