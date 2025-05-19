@@ -1453,16 +1453,49 @@ for (let i = selection.length - 1; i > 0; i--) {
   [selection[i], selection[j]] = [selection[j], selection[i]];
 }
 let selection_slice = selection.slice(0, 4); // First 4 unique random numbers
+remainder = 4
 // Editable settings
+let cornerEnabled = selection_slice.some(num => num === 6);
+if (cornerEnabled) {
+  remainder -= 1
+}
+let shapeEnabled = selection_slice.some(num => num === 7);
+if (shapeEnabled) {
+  if (!cornerEnabled) {
+     remainder -= 2
+     cornerEnabled = true 
+  } else {
+    remainder -= 1
+  }
+}
 let wallsEnabled = selection_slice.some(num => num === 1);
+if (wallsEnabled) {
+  remainder -= 1
+}
 let cameraEnabled = selection_slice.some(num => num === 2);
-let faceEnabled = selection_slice.some(num => num === 3);
-let positionEnabled = selection_slice.some(num => num === 4);
-let wordEnabled = selection_slice.some(num => num === 5);
-let shapeEnabled = selection_slice.some(num => num === 6);
-let cornerEnabled = selection_slice.some(num => num === 7);
-let soundEnabled = selection_slice.some(num => num === 8);
-let colorEnabled = selection_slice.some(num => num === 9);
+if (cameraEnabled) {
+  remainder -= 1
+}
+let faceEnabled = (remainder > 0) && selection_slice.some(num => num === 3);
+if (faceEnabled) {
+  remainder -= 1
+}
+let positionEnabled = (remainder > 0) && selection_slice.some(num => num === 4);
+if (positionEnabled) {
+  remainder -= 1
+}
+let wordEnabled = (remainder > 0) && selection_slice.some(num => num === 5);
+if (wordEnabled) {
+  remainder -= 1
+}
+let soundEnabled = (remainder > 0) && selection_slice.some(num => num === 8);
+if (soundEnabled) {
+  remainder -= 1
+}
+let colorEnabled = (remainder > 0) && selection_slice.some(num => num === 9);
+if (colorEnabled) {
+  remainder -= 1
+}
 let tileAHexColor = defVal_tileAHexColor;
 let tileBHexColor = defVal_tileBHexColor;
 let nLevel = defVal_nLevel;
