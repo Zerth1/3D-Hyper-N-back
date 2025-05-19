@@ -1648,3 +1648,4 @@ document.addEventListener("keydown", evt  => {
 loadBindings();
 loadSettings();
 loadHistory();
+console.log("Running")
