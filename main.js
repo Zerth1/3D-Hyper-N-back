@@ -445,6 +445,7 @@ function resetBindings() {
 }
 
 function reloadBindKeys() {
+  console.log(keyBindings)
   for (let [ stim, key ] of Object.entries(keyBindings)) {
     document.querySelector(`.bind-key-${stim}`).innerHTML = `(${key})`;
   }
