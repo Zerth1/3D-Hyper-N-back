@@ -28,177 +28,6 @@ let history = {
 const historyDefault = deepCopy(history);
 
 // Functions
-function wallsEnableTrigHandler(evt, defVal) {
-  if (defVal != null) {
-    wallsEnableTrig.checked = defVal;
-    wallsEnabled = defVal;
-  } else {
-    wallsEnabled = !wallsEnabled;
-    saveSettings();
-  }
-
-  if (!wallsEnabled) {
-    checkWallsBtn.style.display = "none";
-  } else {
-    checkWallsBtn.style.display = "inline-block";
-  }
-
-  checkWallsBtn.style.animationDelay = "0s";
-}
-
-function cameraEnableTrigHandler(evt, defVal) {
-  if (defVal != null) {
-    cameraEnableTrig.checked = defVal;
-    cameraEnabled = defVal;
-  } else {
-    cameraEnabled = !cameraEnabled;
-    saveSettings();
-  }
-
-  if (!cameraEnabled) {
-    checkCameraBtn.style.display = "none";
-  } else {
-    checkCameraBtn.style.display = "inline-block";
-  }
-
-  checkCameraBtn.style.animationDelay = "0s";
-}
-
-function faceEnableTrigHandler(evt, defVal) {
-  if (defVal != null) {
-    faceEnableTrig.checked = defVal;
-    faceEnabled = defVal;
-  } else {
-    faceEnabled = !faceEnabled;
-    saveSettings();
-  }
-
-  if (!faceEnabled) {
-    checkFaceBtn.style.display = "none";
-  } else {
-    checkFaceBtn.style.display = "inline-block";
-  }
-
-  checkFaceBtn.style.animationDelay = "0s";
-}
-
-function positionEnableTrigHandler(evt, defVal) {
-  if (defVal != null) {
-    positionEnableTrig.checked = defVal;
-    positionEnabled = defVal;
-  } else {
-    positionEnabled = !positionEnabled;
-    saveSettings();
-  }
-
-  if (!positionEnabled) {
-    checkPositionBtn.style.display = "none";
-  } else {
-    checkPositionBtn.style.display = "inline-block";
-  }
-
-  checkPositionBtn.style.animationDelay = "0s";
-}
-
-function wordEnableTrigHandler(evt, defVal) {
-  if (defVal != null) {
-    wordEnableTrig.checked = defVal;
-    wordEnabled = defVal;
-  } else {
-    wordEnabled = !wordEnabled;
-    saveSettings();
-  }
-
-  if (!wordEnabled) {
-    checkWordBtn.style.display = "none";
-  } else {
-    checkWordBtn.style.display = "inline-block";
-  }
-  
-  checkWordBtn.style.animationDelay = "0s";
-}
-
-function shapeEnableTrigHandler(evt, defVal) {
-  if (defVal != null) {
-    shapeEnableTrig.checked = defVal;
-    shapeEnabled = defVal;
-  } else {
-    shapeEnabled = !shapeEnabled;
-    saveSettings();
-  }
-
-  if (!shapeEnabled) {
-    checkShapeBtn.style.display = "none";
-  } else {
-    checkShapeBtn.style.display = "inline-block";
-  }
-
-  checkShapeBtn.style.animationDelay = "0s";
-}
-
-function cornerEnableTrigHandler(evt, defVal) {
-  if (defVal != null) {
-    cornerEnableTrig.checked = defVal;
-    cornerEnabled = defVal;
-  } else {
-    cornerEnabled = !cornerEnabled;
-    saveSettings();
-  }
-  
-  if (!cornerEnabled) {
-    shapeEnableTrigHandler(null, false);
-    shapeEnableTrig.disabled = true;
-    
-    innerCube.style.display = "none";
-    checkCornerBtn.style.display = "none";
-    checkShapeBtn.style.display = "none";
-  } else {
-    shapeEnableTrig.disabled = false;
-    
-    innerCube.style.display = "block";
-    checkCornerBtn.style.display = "inline-block";
-  }
-  
-  innerFaceEls.forEach(face => face.style.animationDelay = "0s"),
-  checkCornerBtn.style.animationDelay = "0s";
-}
-
-function soundEnableTrigHandler(evt, defVal) {
-  if (defVal != null) {
-    soundEnableTrig.checked = defVal;
-    soundEnabled = defVal;
-  } else {
-    soundEnabled = !soundEnabled;
-    saveSettings();
-  }
-
-  if (!soundEnabled) {
-    checkSoundBtn.style.display = "none";
-  } else {
-    checkSoundBtn.style.display = "inline-block";
-  }
-
-  checkSoundBtn.style.animationDelay = "0s";
-}
-
-function colorEnableTrigHandler(evt, defVal) {
-  if (defVal != null) {
-    colorEnableTrig.checked = defVal;
-    colorEnabled = defVal;
-  } else {
-    colorEnabled = !colorEnabled;
-    saveSettings();
-  }
-
-  if (!colorEnabled) {
-    checkColorBtn.style.display = "none";
-  } else {
-    checkColorBtn.style.display = "inline-block";
-  }
-
-  checkColorBtn.style.animationDelay = "0s"
-}
-
 function nLevelInputHandler(evt, defVal) {
   if (defVal != null) {
     nLevelInput.value = defVal;
@@ -527,43 +356,7 @@ function loadHistory() {
 }
 
 function saveSettings() {
-  const settings = {
-    wallsEnabled,
-    cameraEnabled,
-    faceEnabled,
-    positionEnabled,
-    wordEnabled,
-    shapeEnabled,
-    cornerEnabled,
-    soundEnabled,
-    colorEnabled,
-    //
-    nLevel,
-    sceneDimmer,
-    zoom,
-    perspective,
-    targetNumOfStimuli,
-    baseDelay,
-    maxAllowedMistakes,
-    prevLevelThreshold,
-    nextLevelThreshold
-  };
-  localStorage.setItem(LS_SETTINGS_KEY, JSON.stringify(settings));
-  return settings;
-}
-
-function loadSettings() {
   let settings = {
-    wallsEnabled,
-    cameraEnabled,
-    faceEnabled,
-    positionEnabled,
-    wordEnabled,
-    shapeEnabled,
-    cornerEnabled,
-    soundEnabled,
-    colorEnabled,
-    //
     nLevel,
     sceneDimmer,
     zoom,
@@ -574,6 +367,15 @@ function loadSettings() {
     prevLevelThreshold,
     nextLevelThreshold
   } 
+  localStorage.setItem(LS_SETTINGS_KEY, JSON.stringify(settings));
+  return settings;
+}
+
+function loadSettings() {
+  let settings = JSON.parse(localStorage.getItem(LS_SETTINGS_KEY));
+  if (!settings) {
+    settings = saveSettings();
+  }
   nLevelInputHandler(null, nLevel);
   sceneDimmerInputHandler(null, sceneDimmer);
   zoomInputHandler(null, zoom);
