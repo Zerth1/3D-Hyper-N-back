@@ -297,9 +297,9 @@ function saveBindings() {
   reloadBindKeys();
 }
 function loadBindings() {
-  indexMapping = ["a", "f", "j", "l"]
-  bindingOrder = {}
-  startingIndex = 0
+  const indexMapping = ["a", "f", "j", "l"]
+  let bindingOrder = {}
+  let startingIndex = 0
   if (wallsEnabled) {
     bindingOrder["Walls"] = indexMapping[startingIndex]
     startingIndex += 1
