@@ -1034,7 +1034,15 @@ function stop() {
   resetPoints();
   resetBlock();
   resetIntervals();
-  
+  cornerEnabled = false;
+  shapeEnabled = false;
+  wallsEnabled = false;
+  cameraEnabled = false;
+  faceEnabled = false;
+  positionEnabled = false;
+  wordEnabled = false;
+  soundEnabled = false;
+  colorEnabled = false;
   speak("Stop.");
   document.querySelector(".stop").classList.add("active");
   document.querySelector(".play").classList.remove("active");
