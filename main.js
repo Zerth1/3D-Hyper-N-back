@@ -923,12 +923,6 @@ function play() {
   if (cornerEnabled) {
     remainder -= 1
   }
-  if (!cornerEnabled) {
-    checkCornerBtn.style.display = "none";
-  } else {
-    checkCornerBtn.style.display = "inline-block";
-  }
-  checkCornerBtn.style.animationDelay = "0s";
   shapeEnabled = selection_slice.some(num => num === 7);
   if (shapeEnabled) {
     if (!cornerEnabled) {
@@ -940,6 +934,10 @@ function play() {
       remainder -= 1
     }
   }
+  if (!cornerEnabled) {
+    checkCornerBtn.style.display = "none";
+  }
+  checkCornerBtn.style.animationDelay = "0s";
   if (!shapeEnabled) {
     checkShapeBtn.style.display = "none";
   } else {
@@ -1382,12 +1380,6 @@ let cornerEnabled = selection_slice.some(num => num === 6);
 if (cornerEnabled) {
   remainder -= 1
 }
-if (!cornerEnabled) {
-  checkCornerBtn.style.display = "none";
-} else {
-  checkCornerBtn.style.display = "inline-block";
-}
-checkCornerBtn.style.animationDelay = "0s";
 let shapeEnabled = selection_slice.some(num => num === 7);
 if (shapeEnabled) {
   if (!cornerEnabled) {
@@ -1399,6 +1391,10 @@ if (shapeEnabled) {
     remainder -= 1
   }
 }
+if (!cornerEnabled) {
+  checkCornerBtn.style.display = "none";
+}
+checkCornerBtn.style.animationDelay = "0s";
 if (!shapeEnabled) {
   checkShapeBtn.style.display = "none";
 } else {
