@@ -928,14 +928,14 @@ function play() {
     if (!cornerEnabled) {
       remainder -= 2
       cornerEnabled = true 
-      checkCornerBtn.style.display = "inline-block";
-      checkCornerBtn.style.animationDelay = "0s";
     } else {
       remainder -= 1
     }
   }
   if (!cornerEnabled) {
     checkCornerBtn.style.display = "none";
+  } else {
+    checkCornerBtn.style.display = "inline-block";
   }
   checkCornerBtn.style.animationDelay = "0s";
   if (!shapeEnabled) {
@@ -1385,14 +1385,14 @@ if (shapeEnabled) {
   if (!cornerEnabled) {
     remainder -= 2
     cornerEnabled = true 
-    checkCornerBtn.style.display = "inline-block";
-    checkCornerBtn.style.animationDelay = "0s";
   } else {
     remainder -= 1
   }
 }
 if (!cornerEnabled) {
   checkCornerBtn.style.display = "none";
+} else {
+  checkCornerBtn.style.display = "inline-block";
 }
 checkCornerBtn.style.animationDelay = "0s";
 if (!shapeEnabled) {
