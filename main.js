@@ -376,15 +376,15 @@ function loadSettings() {
   if (!settings) {
     settings = saveSettings();
   }
-  nLevelInputHandler(null, nLevel);
-  sceneDimmerInputHandler(null, sceneDimmer);
-  zoomInputHandler(null, zoom);
-  perspectiveInputHandler(null, perspective);
-  targetStimuliInputHandler(null, targetNumOfStimuli);
-  baseDelayInputHandler(null, baseDelay);
-  maxAllowedMistakesInputHandler(null, maxAllowedMistakes);
-  previousLevelThresholdInputHandler(null, prevLevelThreshold);
-  nextLevelThresholdInputHandler(null, nextLevelThreshold);
+  nLevelInputHandler(null, settings.nLevel);
+  sceneDimmerInputHandler(null, settings.sceneDimmer);
+  zoomInputHandler(null, settings.zoom);
+  perspectiveInputHandler(null, settings.perspective);
+  targetStimuliInputHandler(null, settings.targetNumOfStimuli);
+  baseDelayInputHandler(null, settings.baseDelay);
+  maxAllowedMistakesInputHandler(null, settings.maxAllowedMistakes);
+  previousLevelThresholdInputHandler(null, settings.prevLevelThreshold);
+  nextLevelThresholdInputHandler(null, settings.nextLevelThreshold);
 }
 
 function openBindings() {
