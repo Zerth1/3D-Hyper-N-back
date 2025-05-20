@@ -1389,8 +1389,8 @@ checkCornerBtn.style.animationDelay = "0s";
 let shapeEnabled = selection_slice.some(num => num === 7);
 if (shapeEnabled) {
   if (!cornerEnabled) {
-      remainder -= 2
-     cornerEnabled = true 
+    remainder -= 2
+    cornerEnabled = true 
   } else {
     remainder -= 1
   }
